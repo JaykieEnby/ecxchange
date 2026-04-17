@@ -628,8 +628,7 @@ function transitionView(outEl, inEl, callback) {
     outEl.classList.remove('fade-out');
     inEl.classList.remove('hidden');
     inEl.classList.add('fade-enter');
-    // Always rebind numpad inputs after a view transition
-    bindNumpadInputs();
+
     if (callback) callback();
     void inEl.offsetWidth;
     inEl.classList.remove('fade-enter');
@@ -1456,8 +1455,8 @@ function smsReceipt() {
 
   // Bind numpad to SMS input
   smsInput.style.cursor = 'pointer';
-  smsInput.onclick = function() { openNumpadForInput(smsInput); };
-  smsInput.onfocus = function() { openNumpadForInput(smsInput); };
+  smsInput.onclick = function() { /* simple numpad not for SMS */ };
+  smsInput.onfocus = function() { /* simple numpad not for SMS */ };
 
   // Wire up validation on input
   smsInput.removeEventListener('input', validateSmsInput);
@@ -1533,154 +1532,19 @@ document.getElementById('id-number-input').addEventListener('input', validateCom
 document.getElementById('wallet-number-input').addEventListener('input', validateWallet);
 
 /* ==================================================
-   INIT: Number Pad Logic (generic for all inputs)
+   INIT: Number Pad Logic (v1.1 simple version - amount-only)
    ================================================== */
 let numpadBuffer = '';
-let numpadTarget = null;   // the input element currently being edited
-let numpadMaxLen = 10;
-let numpadIsAmount = false;
-let numpadFormatPhone = false;
-
-
 const numpadOverlay = document.getElementById('numpad-overlay');
 const numpadValueEl = document.getElementById('numpad-value');
-const numpadPrefixEl = document.getElementById('numpad-prefix');
-const numpadHeaderEl = document.getElementById('numpad-header');
-let amountInput = document.getElementById('amount-input');
 
-function bindNumpadInputs() {
-  // Re-query amountInput in case DOM was replaced
-  amountInput = document.getElementById('amount-input');
-  if (amountInput) {
-    amountInput.setAttribute('readonly', true);
-    amountInput.style.cursor = 'pointer';
-    amountInput.removeEventListener('click', amountInput._numpadClick);
-    amountInput.removeEventListener('focus', amountInput._numpadFocus);
-    amountInput._numpadClick = function() { openNumpadFor(amountInput, { max: 10, label: 'Enter Amount', prefix: '₱', isAmount: true }); };
-    amountInput._numpadFocus = function() { openNumpadFor(amountInput, { max: 10, label: 'Enter Amount', prefix: '₱', isAmount: true }); };
-    amountInput.addEventListener('click', amountInput._numpadClick);
-    amountInput.addEventListener('focus', amountInput._numpadFocus);
-  }
-  document.querySelectorAll('.kiosk-numpad-input').forEach(function(input) {
-    input.style.cursor = 'pointer';
-    input.removeEventListener('click', input._numpadClick);
-    input.removeEventListener('focus', input._numpadFocus);
-    input._numpadClick = function() { openNumpadForInput(input); };
-    input._numpadFocus = function() { openNumpadForInput(input); };
-    input.addEventListener('click', input._numpadClick);
-    input.addEventListener('focus', input._numpadFocus);
-  });
-}
+// Bind ONLY to amount-input for simple v1.1
+const amountInput = document.getElementById('amount-input');
+amountInput.removeAttribute('readonly');
+amountInput.style.cursor = 'auto';
+amountInput.addEventListener('input', onAmountChange);
 
 
-// Initial binding after DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', bindNumpadInputs);
-} else {
-  bindNumpadInputs();
-}
-
-// Fallback: Always rebind numpad inputs after any click (in case of missed dynamic DOM changes)
-document.body.addEventListener('click', function(e) {
-  setTimeout(bindNumpadInputs, 100); // slight delay to allow DOM updates
-});
-
-
-
-function openNumpadForInput(input) {
-  var max = parseInt(input.getAttribute('data-numpad-max'), 10) || 10;
-  var label = input.getAttribute('data-numpad-label') || 'Enter Value';
-  var prefix = input.getAttribute('data-numpad-prefix');
-  var formatPhone = input.getAttribute('data-numpad-format') === 'phone';
-  openNumpadFor(input, { max: max, label: label, prefix: prefix != null ? prefix : '', isAmount: false, formatPhone: formatPhone });
-}
-
-numpadOverlay.addEventListener('click', function(e) {
-  if (e.target === numpadOverlay) numpadDone();
-});
-
-function openNumpadFor(input, opts) {
-  numpadTarget = input;
-  numpadMaxLen = opts.max || 10;
-  numpadIsAmount = opts.isAmount || false;
-  numpadFormatPhone = opts.formatPhone || false;
-
-  // Set header and prefix
-  numpadHeaderEl.textContent = opts.label || 'Enter Value';
-  numpadPrefixEl.textContent = opts.prefix || '';
-  numpadPrefixEl.style.display = opts.prefix ? '' : 'none';
-
-  // Read current value from input
-  var raw = input.value.replace(/[^0-9]/g, '');
-  numpadBuffer = raw && raw !== '0' ? raw : '';
-  if (numpadIsAmount) {
-    var num = parseInt(raw, 10);
-    numpadBuffer = num ? String(num) : '';
-  }
-  renderNumpad();
-  numpadOverlay.classList.add('visible');
-}
-
-// Keep old openNumpad for backward compat (amount input)
-function openNumpad() {
-  openNumpadFor(amountInput, { max: 10, label: 'Enter Amount', prefix: '₱', isAmount: true });
-}
-
-function numpadPress(digit) {
-  if (numpadBuffer.length >= numpadMaxLen) return;
-  numpadBuffer += digit;
-  renderNumpad();
-}
-
-function numpadBackspace() {
-  numpadBuffer = numpadBuffer.slice(0, -1);
-  renderNumpad();
-}
-
-function numpadClear() {
-  numpadBuffer = '';
-  renderNumpad();
-}
-
-function numpadDone() {
-  if (!numpadTarget) { numpadOverlay.classList.remove('visible'); return; }
-
-  if (numpadIsAmount) {
-    var val = parseInt(numpadBuffer, 10) || 0;
-    numpadTarget.value = val || '';
-    onAmountChange();
-  } else if (numpadFormatPhone) {
-    // Format as 09XX XXX XXXX for display
-    numpadTarget.value = numpadBuffer;
-    // Trigger any validation listeners
-    numpadTarget.dispatchEvent(new Event('input', { bubbles: true }));
-  } else {
-    numpadTarget.value = numpadBuffer;
-    numpadTarget.dispatchEvent(new Event('input', { bubbles: true }));
-  }
-
-  numpadOverlay.classList.remove('visible');
-  numpadTarget.blur();
-  numpadTarget = null;
-}
-
-function renderNumpad() {
-  var display;
-  if (numpadBuffer === '') {
-    display = '0';
-  } else if (numpadIsAmount) {
-    display = parseInt(numpadBuffer, 10).toLocaleString('en-PH');
-  } else if (numpadFormatPhone && numpadBuffer.length > 0) {
-    // Format as 09XX XXX XXXX
-    var d = numpadBuffer;
-    if (d.length <= 4) display = d;
-    else if (d.length <= 7) display = d.slice(0,4) + ' ' + d.slice(4);
-    else display = d.slice(0,4) + ' ' + d.slice(4,7) + ' ' + d.slice(7);
-  } else {
-    display = numpadBuffer;
-  }
-  numpadValueEl.textContent = display;
-}
 
 /* ==================================================
    INIT: Render defaults + stepper hidden + log start

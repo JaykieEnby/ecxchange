@@ -1,3 +1,25 @@
+/* Custom style for kiosk-amount-input */
+.kiosk-amount-input {
+  width: 100%;
+  padding: 0.65rem 1rem 0.65rem 2.5rem;
+  font-size: 20px;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: #1e293b;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.kiosk-amount-input:focus {
+  outline: none;
+  border-color: #1a56a0;
+  box-shadow: 0 0 0 3px rgba(26,86,160,0.12);
+}
+.kiosk-amount-input::-webkit-inner-spin-button,
+.kiosk-amount-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
 .language-screen {
   text-align: center;
   padding: 2.5rem 1.5rem 2rem;
@@ -491,113 +513,7 @@ select:focus { outline: none; border-color: #1a56a0; box-shadow: 0 0 0 3px rgba(
 }
 
 /* Number pad overlay */
-.numpad-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  z-index: 100;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-.numpad-overlay.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-.numpad {
-  background: #f0f4f8;
-  width: 100%;
-  max-width: 480px;
-  border-radius: 16px 16px 0 0;
-  padding: 1rem 1rem 1.25rem;
-  transform: translateY(100%);
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 22px;
-    font-weight: 700;
-    margin: 0 auto;
-    letter-spacing: 0.5px;
-  }
-  transition: transform 0.25s ease;
-    height: 22px !important;
-    width: auto;
-    vertical-align: middle;
-    margin-right: 6px;
-    filter: brightness(0) invert(1);
-  }
-}
-.numpad-overlay.visible .numpad {
-  transform: translateY(0);
-}
-.numpad-header {
-  font-size: 14px;
-  font-weight: 600;
-  color: #475569;
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-.numpad-display {
-  background: #fff;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  padding: 0.6rem 1rem;
-  font-size: 24px;
-  font-weight: 600;
-  color: #1e293b;
-  text-align: right;
-  margin-bottom: 0.75rem;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-}
-.numpad-display .prefix {
-  color: #94a3b8;
-  font-size: 20px;
-}
-.numpad-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.numpad-btn {
-  padding: 1rem;
-  font-size: 22px;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
-  background: #fff;
-  color: #1e293b;
-  cursor: pointer;
-  font-family: inherit;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  transition: background 0.1s, transform 0.1s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-.numpad-btn:hover { background: #e2e8f0; }
-.numpad-btn:active { transform: scale(0.95); background: #cbd5e1; }
-.numpad-btn.action {
-  background: #e2e8f0;
-  color: #64748b;
-  font-size: 16px;
-}
-.numpad-btn.action:hover { background: #cbd5e1; }
-.numpad-btn.done {
-  background: #1a56a0;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 600;
-}
-.numpad-btn.done:hover { background: #154a8a; }
+
 
 /* ---- Splash / Attract Screen ---- */
 .splash-screen {

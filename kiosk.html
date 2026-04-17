@@ -243,7 +243,7 @@
 
         <div id="id-number-field" class="field hidden">
           <label>ID number (last 4 digits)</label>
-          <input type="text" id="id-number-input" maxlength="4" placeholder="••••" class="compliance-input kiosk-numpad-input" readonly data-numpad-max="4" data-numpad-label="ID Number (last 4 digits)" data-numpad-prefix="" />
+<input type="text" id="id-number-input" maxlength="4" placeholder="••••" class="compliance-input" />
         </div>
 
         <div class="compliance-terms">
@@ -339,7 +339,7 @@
           <label id="amount-label">Amount inserted (PHP &#8369;)</label>
           <div class="input-group">
             <span class="currency-prefix" id="currency-prefix">&#8369;</span>
-            <input type="text" id="amount-input" placeholder="0" class="kiosk-numpad-input" readonly data-numpad-max="10" data-numpad-label="Enter Amount" data-numpad-prefix="₱" data-numpad-amount="true" />
+<input type="number" id="amount-input" placeholder="0" class="kiosk-amount-input" min="0" step="1" />
           </div>
         </div>
 
@@ -492,7 +492,7 @@
         <div id="manual-input-section" class="hidden">
           <div class="field">
             <label>Mobile / Wallet number</label>
-            <input type="tel" id="wallet-number-input" maxlength="13" placeholder="09XX XXX XXXX" class="compliance-input kiosk-numpad-input" readonly data-numpad-max="11" data-numpad-label="Mobile / Wallet Number" data-numpad-prefix="" data-numpad-format="phone" style="letter-spacing:3px;" />
+<input type="tel" id="wallet-number-input" maxlength="13" placeholder="09XX XXX XXXX" class="compliance-input" style="letter-spacing:3px;" />
             <p style="font-size:12px;color:#94a3b8;margin-top:4px;">Enter your 11-digit mobile number</p>
           </div>
           <button class="btn-exchange" id="digital-proceed-btn" onclick="proceedFromDigitalPayout()" disabled>Send from E-Wallet</button>
@@ -524,7 +524,7 @@
         </div>
         <p class="otp-sent-info" id="otp-sent-msg">Code sent to 09XX***XXXX</p>
         <div class="field">
-          <input type="text" id="otp-input" maxlength="6" placeholder="000000" class="compliance-input kiosk-numpad-input" readonly data-numpad-max="6" data-numpad-label="Enter OTP Code" data-numpad-prefix="" style="font-size:28px;letter-spacing:12px;" />
+<input type="text" id="otp-input" maxlength="6" placeholder="000000" class="compliance-input" style="font-size:28px;letter-spacing:12px;" />
         </div>
         <div id="otp-error" class="otp-error hidden">Invalid code. Please try again.</div>
         <div class="otp-timer-row">
@@ -664,38 +664,14 @@
     <h3 class="modal-title" id="sms-modal-title" style="text-align:center;">Send Receipt via SMS</h3>
     <p class="modal-subtitle" id="sms-modal-subtitle">Enter the mobile number to send the receipt to</p>
     <div class="field">
-      <input type="tel" id="sms-receipt-input" maxlength="13" placeholder="09XX XXX XXXX" class="compliance-input kiosk-numpad-input" readonly data-numpad-max="11" data-numpad-label="Mobile Number" data-numpad-prefix="" data-numpad-format="phone" style="letter-spacing:3px;font-size:18px;text-align:center;" />
+<input type="tel" id="sms-receipt-input" maxlength="13" placeholder="09XX XXX XXXX" class="compliance-input" style="letter-spacing:3px;font-size:18px;text-align:center;" />
     </div>
     <button class="btn-exchange" id="sms-send-btn" onclick="confirmSmsReceipt()" disabled>Send Receipt</button>
     <button class="btn-clear" onclick="closeSmsReceipt()">Cancel</button>
   </div>
 </div>
 
-<!-- NUMBER PAD OVERLAY -->
-<div class="numpad-overlay" id="numpad-overlay">
-  <div class="numpad">
-    <div class="numpad-header" id="numpad-header">Enter Amount</div>
-    <div class="numpad-display">
-      <span class="prefix" id="numpad-prefix">₱</span>
-      <span id="numpad-value">0</span>
-    </div>
-    <div class="numpad-grid">
-      <button class="numpad-btn" onclick="numpadPress('1')">1</button>
-      <button class="numpad-btn" onclick="numpadPress('2')">2</button>
-      <button class="numpad-btn" onclick="numpadPress('3')">3</button>
-      <button class="numpad-btn" onclick="numpadPress('4')">4</button>
-      <button class="numpad-btn" onclick="numpadPress('5')">5</button>
-      <button class="numpad-btn" onclick="numpadPress('6')">6</button>
-      <button class="numpad-btn" onclick="numpadPress('7')">7</button>
-      <button class="numpad-btn" onclick="numpadPress('8')">8</button>
-      <button class="numpad-btn" onclick="numpadPress('9')">9</button>
-      <button class="numpad-btn action" onclick="numpadClear()">Clear</button>
-      <button class="numpad-btn" onclick="numpadPress('0')">0</button>
-      <button class="numpad-btn action" onclick="numpadBackspace()">&larr;</button>
-    </div>
-    <button class="numpad-btn done" style="width:100%;margin-top:8px;" onclick="numpadDone()">Done</button>
-  </div>
-</div>
+
 
 <script src="kiosk.js"></script>
 </body>

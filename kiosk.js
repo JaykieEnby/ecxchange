@@ -2,16 +2,20 @@
 document.addEventListener('DOMContentLoaded', function() {
   const overlay = document.getElementById('kiosk-numpad-overlay');
   const modal = overlay.querySelector('.kiosk-numpad-modal');
-  const numpadInput = document.getElementById('kiosk-numpad-input');
   let activeInput = null;
 
   // Show numpad for all text/tel fields
   document.body.addEventListener('focusin', function(e) {
     if (e.target.tagName === 'INPUT' && (e.target.type === 'text' || e.target.type === 'tel')) {
       activeInput = e.target;
-      numpadInput.value = activeInput.value;
+      // Position the numpad below the input
+      const rect = activeInput.getBoundingClientRect();
+      const scrollY = window.scrollY || window.pageYOffset;
+      const scrollX = window.scrollX || window.pageXOffset;
+      modal.style.top = (rect.bottom + scrollY + 8) + 'px';
+      modal.style.left = (rect.left + scrollX) + 'px';
       overlay.classList.remove('hidden');
-      setTimeout(() => numpadInput.focus(), 50);
+      overlay.classList.add('active');
     }
   });
 
@@ -19,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
   overlay.addEventListener('click', function(e) {
     if (e.target === overlay) {
       overlay.classList.add('hidden');
+      overlay.classList.remove('active');
       activeInput = null;
     }
   });
@@ -29,17 +34,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const value = btn.textContent;
       if (!activeInput) return;
       if (value === 'C') {
-        numpadInput.value = '';
+        activeInput.value = '';
       } else if (value === 'OK') {
-        activeInput.value = numpadInput.value;
         overlay.classList.add('hidden');
+        overlay.classList.remove('active');
         activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        if (activeInput.id === 'amount-input' && typeof window.onAmountChange === 'function') {
+          window.onAmountChange();
+        }
         activeInput = null;
       } else {
         // Respect maxlength if set
         let max = activeInput.maxLength > 0 ? activeInput.maxLength : 1000;
-        if (numpadInput.value.length < max) {
-          numpadInput.value += value;
+        if (activeInput.value.length < max) {
+          activeInput.value += value;
         }
       }
     });
@@ -1499,8 +1507,7 @@ function smsReceipt() {
 
   // Bind numpad to SMS input
   smsInput.style.cursor = 'pointer';
-  smsInput.onclick = function() { openNumpadForInput(smsInput); };
-  smsInput.onfocus = function() { openNumpadForInput(smsInput); };
+  // Removed custom onclick/onfocus for smsInput to allow global numpad overlay
 
   // Wire up validation on input
   smsInput.removeEventListener('input', validateSmsInput);
@@ -1594,16 +1601,7 @@ let amountInput = document.getElementById('amount-input');
 function bindNumpadInputs() {
   // Re-query amountInput in case DOM was replaced
   amountInput = document.getElementById('amount-input');
-  if (amountInput) {
-    amountInput.setAttribute('readonly', true);
-    amountInput.style.cursor = 'pointer';
-    amountInput.removeEventListener('click', amountInput._numpadClick);
-    amountInput.removeEventListener('focus', amountInput._numpadFocus);
-    amountInput._numpadClick = function() { openNumpadFor(amountInput, { max: 10, label: 'Enter Amount', prefix: '₱', isAmount: true }); };
-    amountInput._numpadFocus = function() { openNumpadFor(amountInput, { max: 10, label: 'Enter Amount', prefix: '₱', isAmount: true }); };
-    amountInput.addEventListener('click', amountInput._numpadClick);
-    amountInput.addEventListener('focus', amountInput._numpadFocus);
-  }
+  // Removed readonly and custom click/focus handlers for amountInput to allow global numpad overlay
   document.querySelectorAll('.kiosk-numpad-input').forEach(function(input) {
     input.style.cursor = 'pointer';
     input.removeEventListener('click', input._numpadClick);

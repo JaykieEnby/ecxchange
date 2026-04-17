@@ -149,22 +149,30 @@ label { display: block; font-size: 13px; color: #64748b; margin-bottom: 6px; fon
   font-size: 18px; font-weight: 600; color: #94a3b8;
   pointer-events: none;
 }
-input[type=number] {
+input[type=number],
+input[type=text],
+input[type=password],
+textarea {
   width: 100%;
   padding: 0.65rem 1rem 0.65rem 2.5rem;
   font-size: 20px;
   font-weight: 600;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
   background: #fff;
   color: #1e293b;
   font-family: inherit;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  box-shadow: 0 1px 6px rgba(26,86,160,0.04);
 }
-input[type=number]:focus {
+input[type=number]:focus,
+input[type=text]:focus,
+input[type=password]:focus,
+textarea:focus {
   outline: none;
   border-color: #1a56a0;
-  box-shadow: 0 0 0 3px rgba(26,86,160,0.12);
+  background: #f0f6ff;
+  box-shadow: 0 0 0 3px rgba(26,86,160,0.13);
 }
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
@@ -193,15 +201,43 @@ input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 select {
   width: 100%;
   padding: 0.65rem 1rem;
-  font-size: 15px;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
+  font-size: 16px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
   background: #fff;
   color: #1e293b;
   font-family: inherit;
   cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  box-shadow: 0 1px 6px rgba(26,86,160,0.04);
 }
-select:focus { outline: none; border-color: #1a56a0; box-shadow: 0 0 0 3px rgba(26,86,160,0.12); }
+select:focus {
+  outline: none;
+  border-color: #1a56a0;
+  background: #f0f6ff;
+  box-shadow: 0 0 0 3px rgba(26,86,160,0.13);
+}
+.compliance-input {
+  /* Already styled above, but ensure consistency */
+  background: #fff;
+  color: #1e293b;
+  border-radius: 12px;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 1px 6px rgba(26,86,160,0.04);
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.compliance-input:focus {
+  background: #f0f6ff;
+  border-color: #1a56a0;
+  box-shadow: 0 0 0 3px rgba(26,86,160,0.13);
+}
+
+/* Placeholder color for all text fields */
+input::placeholder,
+textarea::placeholder {
+  color: #b6c3d1;
+  opacity: 1;
+}
 
 .result-card {
   background: #f8fafc;

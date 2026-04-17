@@ -1,16 +1,18 @@
 /* ============================================
-   PESOXCHANGE KIOSK — FULL SYSTEM
+   ECXCHANGE KIOSK — FULL SYSTEM
    Modules: UI, Transaction Engine, Cash Mgmt,
    Digital Payout, Compliance, Monitoring
    ============================================ */
 
 /* ---- Constants & Configuration ---- */
-const RATES   = { USD: 57.50, EUR: 62.10, KRW: 0.0405, CNY: 9.09, CAD: 43.48, JPY: 0.3774, AUD: 43.48, SGD: 47.62, SAR: 15.87 };
-const SYMBOLS = { USD: '$', EUR: '€', KRW: '₩', CNY: '¥', CAD: 'C$', JPY: '¥', AUD: 'A$', SGD: 'S$', SAR: 'SR' };
-const NAMES   = { USD: 'US Dollars', EUR: 'Euros', KRW: 'South Korean Won', CNY: 'Chinese Yuan', CAD: 'Canadian Dollars', JPY: 'Japanese Yen', AUD: 'Australian Dollars', SGD: 'Singapore Dollars', SAR: 'Saudi Riyals' };
+const RATES   = { USD: 57.50, EUR: 62.10, KRW: 0.0405, CNY: 9.09, CAD: 43.48, JPY: 0.3774, AUD: 43.48, SGD: 47.62, SAR: 15.87, HKD: 7.35 };
+const SYMBOLS = { USD: '$', EUR: '€', KRW: '₩', CNY: '¥', CAD: 'C$', JPY: '¥', AUD: 'A$', SGD: 'S$', SAR: 'SR', HKD: 'HK$' };
+const NAMES   = { USD: 'US Dollars', EUR: 'Euros', KRW: 'South Korean Won', CNY: 'Chinese Yuan', CAD: 'Canadian Dollars', JPY: 'Japanese Yen', AUD: 'Australian Dollars', SGD: 'Singapore Dollars', SAR: 'Saudi Riyals', HKD: 'Hong Kong Dollars' };
 const CHANGE_FEE  = 0.01;
 const FOREIGN_FEE = 0.02;
 const AML_THRESHOLD = 50000;
+const AML_MID_THRESHOLD = 10000;  // Mid-tier: require valid ID
+const AML_HIGH_THRESHOLD = 50000; // High-tier: require ID + enhanced due diligence
 const PHP_DENOMS  = [1000, 500, 200, 100, 50, 20, 10, 5, 1];
 const QUICK_AMOUNTS = [20, 50, 100, 200, 500, 1000, 5000, 10000];
 const MACHINE_ID = 'PKX-0042';
@@ -231,7 +233,7 @@ const LANG = {
     walletNumber: 'Mobile / Wallet number',
     walletPlaceholder: '09XX XXX XXXX',
     walletHint: 'Enter your 11-digit mobile number',
-    sendToWallet: 'Send to Wallet',
+    sendToWallet: 'Send from E-Wallet',
     otpTitle: 'OTP Verification',
     otpSubtitle: 'Enter the 6-digit code sent to your registered number',
     otpPlaceholder: '000000',
@@ -256,12 +258,24 @@ const LANG = {
     payout: 'Payout',
     wallet: 'Wallet',
     digitalTransfer: 'Funds sent to your wallet.',
-    txnId: 'Transaction ID'
+    txnId: 'Transaction ID',
+    receiptQuestion: 'Would you like a receipt?',
+    printReceipt: 'Print Receipt',
+    smsReceipt: 'SMS Receipt',
+    noReceipt: 'No Receipt',
+    processingTxn: 'Processing transaction...',
+    scanQr: 'Scan QR Code',
+    scanQrHint: 'Scan this QR code with your e-wallet app',
+    orDivider: '— or —',
+    enterManually: 'Enter number manually',
+    backToQr: 'Back to QR scan',
+    paymentMethod: 'Payment method',
+    insertCash: 'Insert Cash'
   },
   fil: {
-    title: 'PesoXchange Kiosk',
+    title: 'ECXChange Kiosk',
     subtitle: 'Maglagay ng pera sa ibaba para magsimula',
-    welcome: 'PesoXchange',
+    welcome: 'ECXChange',
     tagline: 'Mabilis at Ligtas na Palitan ng Pera',
     bspLicensed: 'Lisensyado ng BSP',
     service247: '24/7 Serbisyo',
@@ -319,7 +333,7 @@ const LANG = {
     walletNumber: 'Numero ng Mobile / Wallet',
     walletPlaceholder: '09XX XXX XXXX',
     walletHint: 'Ilagay ang iyong 11-digit na numero',
-    sendToWallet: 'Ipadala sa Wallet',
+    sendToWallet: 'Ipadala mula sa E-Wallet',
     otpTitle: 'OTP Beripikasyon',
     otpSubtitle: 'Ilagay ang 6-digit code na ipinadala sa iyong numero',
     otpPlaceholder: '000000',
@@ -329,7 +343,7 @@ const LANG = {
     helpTitle: 'Kailangan ng Tulong?',
     helpText: 'Kung may problema, tumawag sa aming hotline o pumunta sa pinakamalapit na service desk.',
     helpHotline: 'Hotline: 1-800-PESO (7376)',
-    helpEmail: 'Email: support@pesoxchange.ph',
+    helpEmail: 'Email: support@ecxchange.ph',
     closeHelp: 'Isara',
     stepService: 'Serbisyo',
     stepVerify: 'I-verify',
@@ -344,7 +358,19 @@ const LANG = {
     payout: 'Pagbabayad',
     wallet: 'Wallet',
     digitalTransfer: 'Pera ipinadala sa iyong wallet.',
-    txnId: 'Transaction ID'
+    txnId: 'Transaction ID',
+    receiptQuestion: 'Gusto mo ba ng resibo?',
+    printReceipt: 'I-print ang Resibo',
+    smsReceipt: 'SMS Resibo',
+    noReceipt: 'Walang Resibo',
+    processingTxn: 'Pinoproseso ang transaksyon...',
+    scanQr: 'I-scan ang QR Code',
+    scanQrHint: 'I-scan ang QR code na ito gamit ang iyong e-wallet app',
+    orDivider: '— o —',
+    enterManually: 'Ilagay ang numero nang mano-mano',
+    backToQr: 'Bumalik sa QR scan',
+    paymentMethod: 'Paraan ng pagbabayad',
+    insertCash: 'Ipasok ang Pera'
   }
 };
 
@@ -359,19 +385,23 @@ function toggleLanguage() {
 }
 
 function applyLanguage() {
-  const langBtn = document.getElementById('lang-btn');
-  langBtn.textContent = currentLang === 'en' ? '🌐 EN' : '🌐 FIL';
-  document.getElementById('header-title').textContent = t('title');
+  // Header — preserve logo image
+  const headerTitle = document.getElementById('header-title');
+  headerTitle.innerHTML = '<img src="assets/Product-Logo-White.png" alt="ECXChange" style="height:16px;vertical-align:baseline;margin-right:1px;">hange Kiosk';
   document.getElementById('header-subtitle').textContent = t('subtitle');
-  // Splash
-  document.querySelector('.splash-screen h2').textContent = t('welcome');
-  document.querySelector('.splash-tagline').textContent = t('tagline');
-  document.querySelector('.btn-start-touch span:last-child, .btn-start-touch').lastChild.textContent = ' ' + t('tapToStart');
-  document.querySelector('.splash-hint').textContent = t('touchToBegin');
+
+  // Splash (h2 was replaced by logo image, so skip it)
+  var splashTagline = document.querySelector('.splash-tagline');
+  if (splashTagline) splashTagline.textContent = t('tagline');
+  var startBtn = document.querySelector('.btn-start-touch');
+  if (startBtn) startBtn.lastChild.textContent = ' ' + t('tapToStart');
+  var splashHint = document.querySelector('.splash-hint');
+  if (splashHint) splashHint.textContent = t('touchToBegin');
   const feats = document.querySelectorAll('.splash-feature span');
   if (feats[0]) feats[0].textContent = t('bspLicensed');
   if (feats[1]) feats[1].textContent = t('service247');
   if (feats[2]) feats[2].textContent = t('competitiveRates');
+
   // Idle
   document.querySelector('.idle-screen h2').textContent = t('welcomeTitle');
   document.querySelector('.idle-screen .subtitle').textContent = t('selectService');
@@ -379,14 +409,190 @@ function applyLanguage() {
   if (modeBtns[0]) { modeBtns[0].querySelector('h3').textContent = t('coinsChange'); modeBtns[0].querySelector('p').textContent = t('coinsChangeDesc'); }
   if (modeBtns[1]) { modeBtns[1].querySelector('h3').textContent = t('foreignExchange'); modeBtns[1].querySelector('p').textContent = t('foreignExchangeDesc'); }
   document.querySelector('.idle-hint').textContent = t('touchServiceHint');
+
+  // Compliance
+  var compView = document.getElementById('compliance-view');
+  if (compView) {
+    compView.querySelector('.compliance-header h3').textContent = t('complianceTitle');
+    compView.querySelector('.compliance-header p').textContent = t('complianceSubtitle');
+    compView.querySelector('.compliance-notice span').textContent = t('complianceNotice');
+    var compLabels = compView.querySelectorAll('.field > label');
+    if (compLabels[0]) compLabels[0].textContent = t('txnType');
+    if (compLabels[1]) compLabels[1].textContent = t('idType');
+    var idField = document.getElementById('id-number-field');
+    if (idField) { var lbl = idField.querySelector('label'); if (lbl) lbl.textContent = t('idLast4'); }
+    var idOpts = document.getElementById('id-type-select');
+    if (idOpts && idOpts.options[0]) idOpts.options[0].textContent = t('noId');
+    var termSpans = compView.querySelectorAll('.compliance-terms label span:last-child');
+    if (termSpans[0]) termSpans[0].innerHTML = t('termsAgree');
+    if (termSpans[1]) termSpans[1].innerHTML = t('dataAgree');
+    document.getElementById('compliance-proceed-btn').textContent = t('proceedToTxn');
+    var compBack = compView.querySelector('.btn-back');
+    if (compBack) compBack.lastChild.textContent = ' ' + t('back');
+    var compCancel = compView.querySelector('.btn-clear');
+    if (compCancel) compCancel.textContent = t('cancel');
+  }
+
+  // Main view — Back/Cancel buttons
+  var mainView = document.getElementById('main-view');
+  if (mainView) {
+    var mainBack = mainView.querySelector('.btn-back');
+    if (mainBack) mainBack.lastChild.textContent = ' ' + t('back');
+    var mainCancel = mainView.querySelector('.btn-clear');
+    if (mainCancel) mainCancel.textContent = t('cancel');
+    var mainProceed = mainView.querySelector('.btn-exchange');
+    if (mainProceed) mainProceed.textContent = t('proceed');
+    // Payment method label
+    var pmGrid = document.getElementById('payment-method-grid');
+    if (pmGrid && pmGrid.parentElement) {
+      var pmLabel = pmGrid.parentElement.querySelector('label');
+      if (pmLabel) pmLabel.textContent = t('paymentMethod');
+    }
+    // Payment method button labels
+    var pmBtns = mainView.querySelectorAll('.payment-method-btn span');
+    if (pmBtns[0]) pmBtns[0].textContent = t('insertCash');
+    // Quick select label
+    var allLabels = mainView.querySelectorAll(':scope > label');
+    allLabels.forEach(function(l) { if (l.textContent.match(/Quick select|Mabilis/i)) l.textContent = t('quickSelect'); });
+    // Result cards
+    var crLabels = document.getElementById('change-section');
+    if (crLabels) {
+      var rows = crLabels.querySelectorAll('.result-label');
+      if (rows[0]) rows[0].textContent = t('totalInserted');
+      if (rows[1]) rows[1].textContent = t('serviceFee') + ' (1%)';
+      if (rows[2]) rows[2].textContent = t('youReceive');
+      var bdLabel = crLabels.querySelector('[style*="color:#64748b"]');
+      if (bdLabel) bdLabel.textContent = t('billsBreakdown');
+    }
+    var frLabels = document.getElementById('foreign-section');
+    if (frLabels) {
+      var frows = frLabels.querySelectorAll('.result-label');
+      if (frows[0]) frows[0].textContent = t('totalInserted');
+      if (frows[1]) frows[1].textContent = t('serviceFee') + ' (2%)';
+      if (frows[2]) frows[2].textContent = t('exchangeRate');
+      var frRecvLabel = document.getElementById('fr-receive-label');
+      if (frRecvLabel) frRecvLabel.textContent = t('youReceive') + ' (PHP)';
+    }
+    // Currency/target labels
+    var foreignSelLabel = document.querySelector('#foreign-selector > label');
+    if (foreignSelLabel) foreignSelLabel.textContent = t('currencyInserted');
+    var targetSelLabel = document.querySelector('#target-selector > label');
+    if (targetSelLabel) targetSelLabel.textContent = t('convertTo');
+  }
+
+  // Payout view
+  var payoutView = document.getElementById('payout-view');
+  if (payoutView) {
+    payoutView.querySelector('.payout-header h3').textContent = t('payoutTitle');
+    payoutView.querySelector('.payout-header p').textContent = t('payoutSubtitle');
+    var payBtns = payoutView.querySelectorAll('.mode-btn .mode-text');
+    if (payBtns[0]) { payBtns[0].querySelector('h3').textContent = t('cashPayout'); payBtns[0].querySelector('p').textContent = t('cashPayoutDesc'); }
+    if (payBtns[1]) { payBtns[1].querySelector('h3').textContent = t('gcashPayout'); payBtns[1].querySelector('p').textContent = t('gcashPayoutDesc'); }
+    if (payBtns[2]) { payBtns[2].querySelector('h3').textContent = t('mayaPayout'); payBtns[2].querySelector('p').textContent = t('mayaPayoutDesc'); }
+    var payCancel = payoutView.querySelector('.btn-clear');
+    if (payCancel) payCancel.textContent = t('cancel');
+    var payBack = payoutView.querySelector('.btn-back');
+    if (payBack) payBack.lastChild.textContent = ' ' + t('back');
+  }
+
+  // Digital payout view
+  var digView = document.getElementById('digital-payout-view');
+  if (digView) {
+    digView.querySelector('.compliance-header h3').textContent = t('digitalPayoutTitle');
+    var digBack = digView.querySelector('.btn-back');
+    if (digBack) digBack.lastChild.textContent = ' ' + t('back');
+    var manualLabel = digView.querySelector('#manual-input-section .field label');
+    if (manualLabel) manualLabel.textContent = t('walletNumber');
+    var walletInput = document.getElementById('wallet-number-input');
+    if (walletInput) walletInput.placeholder = t('walletPlaceholder');
+    var walletHint = digView.querySelector('#manual-input-section .field p');
+    if (walletHint) walletHint.textContent = t('walletHint');
+    document.getElementById('digital-proceed-btn').textContent = t('sendToWallet');
+    // QR section text
+    var qrFrame = digView.querySelector('.qr-frame');
+    if (qrFrame) {
+      var qrPs = qrFrame.querySelectorAll('p');
+      if (qrPs[0]) qrPs[0].textContent = t('scanQr');
+      if (qrPs[1]) qrPs[1].textContent = t('scanQrHint');
+    }
+    var orSpan = digView.querySelector('#qr-scan-section span');
+    if (orSpan) orSpan.textContent = t('orDivider');
+    var manualBtn = digView.querySelector('#qr-scan-section .btn-clear');
+    if (manualBtn) manualBtn.textContent = t('enterManually');
+    var backToQrBtn = digView.querySelector('.btn-text');
+    if (backToQrBtn) backToQrBtn.textContent = t('backToQr');
+    // Cancel button
+    var digCancels = digView.querySelectorAll(':scope > .btn-clear');
+    digCancels.forEach(function(btn) { if (btn.getAttribute('onclick') === 'resetKiosk()') btn.textContent = t('cancel'); });
+  }
+
+  // OTP view
+  var otpView = document.getElementById('otp-view');
+  if (otpView) {
+    otpView.querySelector('.compliance-header h3').textContent = t('otpTitle');
+    otpView.querySelector('.compliance-header p').textContent = t('otpSubtitle');
+    var otpVerifyBtn = otpView.querySelector('.btn-exchange');
+    if (otpVerifyBtn) otpVerifyBtn.textContent = t('verifyOtp');
+    var otpCancelBtn = otpView.querySelector('.btn-clear');
+    if (otpCancelBtn) otpCancelBtn.textContent = t('cancel');
+    var otpBack = otpView.querySelector('.btn-back');
+    if (otpBack) otpBack.lastChild.textContent = ' ' + t('back');
+    document.getElementById('otp-resend-btn').textContent = t('resendOtp');
+  }
+
+  // Success view
+  var successView = document.getElementById('success-view');
+  if (successView) {
+    successView.querySelector('h2').textContent = t('txnComplete');
+    var successBtns = successView.querySelectorAll('button');
+    successBtns.forEach(function(btn) {
+      if (btn.classList.contains('btn-exchange') && btn.getAttribute('onclick') === 'anotherTransaction()') btn.textContent = t('anotherTxn');
+      if (btn.classList.contains('btn-clear') && btn.getAttribute('onclick') === 'resetKiosk()') btn.textContent = t('backToHome');
+    });
+    // Receipt options
+    var receiptQ = successView.querySelector('.receipt-options > p');
+    if (receiptQ) receiptQ.textContent = t('receiptQuestion');
+    var receiptBtns = successView.querySelectorAll('.receipt-btn span');
+    if (receiptBtns[0]) receiptBtns[0].textContent = t('printReceipt');
+    if (receiptBtns[1]) receiptBtns[1].textContent = t('smsReceipt');
+    if (receiptBtns[2]) receiptBtns[2].textContent = t('noReceipt');
+  }
+
+  // Confirm modal
+  var confirmModal = document.getElementById('confirm-overlay');
+  if (confirmModal) {
+    confirmModal.querySelector('.modal-title').textContent = t('confirmTxn');
+    confirmModal.querySelector('.modal-subtitle').textContent = t('reviewDetails');
+    var confBtns = confirmModal.querySelectorAll('button');
+    confBtns.forEach(function(btn) {
+      if (btn.getAttribute('onclick') === 'doExchange()') btn.textContent = t('confirmDispense');
+      if (btn.getAttribute('onclick') === 'hideConfirm()') btn.textContent = t('cancel');
+    });
+  }
+
+  // Help modal
+  var helpModal = document.getElementById('help-overlay');
+  if (helpModal) {
+    helpModal.querySelector('.modal-title').textContent = t('helpTitle');
+    helpModal.querySelector('p[style]').textContent = t('helpText');
+    var helpRows = helpModal.querySelectorAll('.help-row span');
+    if (helpRows[0]) helpRows[0].textContent = t('helpHotline');
+    if (helpRows[1]) helpRows[1].textContent = t('helpEmail');
+    var helpClose = helpModal.querySelector('.btn-exchange');
+    if (helpClose) helpClose.textContent = t('closeHelp');
+  }
+
   // Steps
   updateStepLabels();
-  // Help btn
+  // Help btn in header
   document.getElementById('help-btn').innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> ' + t('help');
+  // Update amount labels if main view is active
+  if (typeof updateInputLabels === 'function') updateInputLabels();
 }
 
 /* ---- UI: Step Progress Indicator ---- */
 let currentStep = 0;
+let selectedPaymentMethod = 'cash';
 const STEPS_CHANGE  = ['stepService', 'stepVerify', 'stepAmount', 'stepConfirm'];
 const STEPS_FOREIGN = ['stepService', 'stepVerify', 'stepAmount', 'stepPayout', 'stepConfirm'];
 
@@ -422,6 +628,8 @@ function transitionView(outEl, inEl, callback) {
     outEl.classList.remove('fade-out');
     inEl.classList.remove('hidden');
     inEl.classList.add('fade-enter');
+    // Always rebind numpad inputs after a view transition
+    bindNumpadInputs();
     if (callback) callback();
     void inEl.offsetWidth;
     inEl.classList.remove('fade-enter');
@@ -430,7 +638,7 @@ function transitionView(outEl, inEl, callback) {
 }
 
 function getVisibleView() {
-  const views = ['splash-view','idle-view','compliance-view','main-view','payout-view','digital-payout-view','otp-view','success-view'];
+  const views = ['splash-view','idle-view','rates-view','compliance-view','main-view','payout-view','digital-payout-view','otp-view','success-view','processing-view'];
   for (const id of views) {
     const el = document.getElementById(id);
     if (el && !el.classList.contains('hidden')) return el;
@@ -443,10 +651,66 @@ function getVisibleView() {
    ================================================== */
 function showServiceSelection() {
   const splash = document.getElementById('splash-view');
-  const idle   = document.getElementById('idle-view');
+  const langSel = document.getElementById('language-view');
+  setStep(-1);
+  transitionView(splash, langSel);
+  logEvent('LANGUAGE_SELECT', { action: 'splash_tapped' });
+}
+
+function selectLanguage(lang) {
+  // Only 'en' and 'fil' are real, others default to English
+  if (lang === 'fil') {
+    currentLang = 'fil';
+  } else {
+    currentLang = 'en';
+  }
+  applyLanguage();
+  // Go to services screen
+  const langSel = document.getElementById('language-view');
+  const idle = document.getElementById('idle-view');
   setStep(0);
-  transitionView(splash, idle);
-  logEvent('SESSION_START', { action: 'splash_tapped' });
+  transitionView(langSel, idle);
+  logEvent('LANGUAGE_SELECTED', { lang });
+}
+
+/* ==================================================
+   SCREEN: EXCHANGE RATES VIEW
+   ================================================== */
+const FLAGS = { USD: '🇺🇸', EUR: '🇪🇺', KRW: '🇰🇷', CNY: '🇨🇳', CAD: '🇨🇦', JPY: '🇯🇵', AUD: '🇦🇺', SGD: '🇸🇬', SAR: '🇸🇦', HKD: '🇭🇰' };
+
+function showRatesView() {
+  const idle  = document.getElementById('idle-view');
+  const rates = document.getElementById('rates-view');
+  populateRatesTable();
+  transitionView(idle, rates);
+}
+
+function backFromRates() {
+  const rates = document.getElementById('rates-view');
+  const idle  = document.getElementById('idle-view');
+  transitionView(rates, idle);
+}
+
+function populateRatesTable() {
+  const table = document.getElementById('rates-table');
+  let html = '';
+  for (const cur of Object.keys(RATES)) {
+    const rate = RATES[cur];
+    const flag = FLAGS[cur] || '';
+    const name = NAMES[cur] || cur;
+    const symbol = SYMBOLS[cur] || '';
+    html += `<div class="rate-row">
+      <div class="rate-currency">
+        <span class="rate-flag">${flag}</span>
+        <div>
+          <div>${cur} <span style="color:#64748b;font-weight:400;">(${symbol})</span></div>
+          <div class="rate-name">${name}</div>
+        </div>
+      </div>
+      <div class="rate-value">₱${rate.toFixed(2)} <small>per 1 ${cur}</small></div>
+    </div>`;
+  }
+  table.innerHTML = html;
 }
 
 /* ==================================================
@@ -518,6 +782,8 @@ function proceedFromCompliance() {
     document.getElementById('foreign-section').classList.toggle('hidden', currentTab !== 'foreign');
     document.getElementById('foreign-selector').classList.toggle('hidden', currentTab !== 'foreign');
     document.getElementById('target-selector').classList.add('hidden');
+    selectedPaymentMethod = 'cash';
+    document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.method === 'cash'));
     updateInputLabels();
     renderDenomButtons();
     onAmountChange();
@@ -639,7 +905,7 @@ function onAmountChange() {
    ================================================== */
 function showPayoutChoice() {
   const raw = parseFloat(document.getElementById('amount-input').value) || 0;
-  if (raw <= 0) { alert(currentLang === 'fil' ? 'Maglagay muna ng halaga.' : 'Please insert an amount first.'); return; }
+  if (raw <= 0) { kioskAlert(currentLang === 'fil' ? 'Maglagay muna ng halaga.' : 'Please insert an amount first.'); return; }
 
   // Store transaction amounts
   storeAmountInTxn(raw);
@@ -689,7 +955,26 @@ function selectPayout(method) {
   updateTransaction({ payoutMethod: method });
   logEvent('PAYOUT_SELECTED', { method });
 
+  // Only block cash payout if amount is above 99,999 PHP
+  let phpAmount;
+  if (currentTab === 'change') {
+    phpAmount = txn.amount;
+  } else {
+    const srcCur = txn.currency;
+    if (srcCur === 'PHP') {
+      phpAmount = txn.amount;
+    } else {
+      phpAmount = txn.convertedAmount;
+    }
+  }
+
   if (method === 'cash') {
+    if (phpAmount > 99999) {
+      kioskAlert(currentLang === 'fil'
+        ? 'Walang sapat na pera sa makina para sa halagang ito. Pumili ng E-wallet payout o kanselahin ang transaksyon.'
+        : "There isn't enough money in the machine for this amount. Please choose E-wallet payout or cancel the transaction.");
+      return;
+    }
     checkOtpOrConfirm();
   } else {
     // Show digital payout screen
@@ -723,8 +1008,9 @@ function proceedFromDigitalPayout() {
 
 function backFromDigitalPayout() {
   const digital = document.getElementById('digital-payout-view');
-  const payout  = document.getElementById('payout-view');
-  transitionView(digital, payout);
+  const main    = document.getElementById('main-view');
+  setStep(2);
+  transitionView(digital, main);
 }
 
 /* ==================================================
@@ -746,7 +1032,7 @@ function checkOtpOrConfirm() {
 }
 
 function showOtp() {
-  otpCode = String(Math.floor(100000 + Math.random() * 900000));
+  otpCode = '111111'; // Demo code for showcase
   console.log('[OTP CODE]', otpCode); // For testing
   logEvent('OTP_SENT', { maskedPhone: '09XX***XXXX' });
 
@@ -783,7 +1069,7 @@ function startOtpTimer() {
 }
 
 function resendOtp() {
-  otpCode = String(Math.floor(100000 + Math.random() * 900000));
+  otpCode = '111111'; // Demo code for showcase
   console.log('[OTP CODE]', otpCode);
   logEvent('OTP_RESENT', {});
   startOtpTimer();
@@ -865,19 +1151,76 @@ function showConfirmModal() {
   document.getElementById('confirm-overlay').classList.add('visible');
 }
 
-function showConfirm() {
+function selectPaymentMethod(method) {
+  selectedPaymentMethod = method;
+  const btns = document.querySelectorAll('.payment-method-btn');
+  btns.forEach(btn => btn.classList.toggle('active', btn.dataset.method === method));
+}
+
+async function showConfirm() {
   // Called from Proceed button on main view
   const raw = parseFloat(document.getElementById('amount-input').value) || 0;
-  if (raw <= 0) { alert(currentLang === 'fil' ? 'Maglagay muna ng halaga.' : 'Please insert an amount first.'); return; }
+  if (raw <= 0) { kioskAlert(currentLang === 'fil' ? 'Maglagay muna ng halaga.' : 'Please insert an amount first.'); return; }
   storeAmountInTxn(raw);
 
-  if (currentTab === 'foreign') {
-    // Go to payout selection for foreign
+  // 3-tier compliance check — always compare in PHP
+  // For foreign→PHP: convertedAmount is PHP; for PHP→foreign or change: raw is already PHP
+  let phpAmount;
+  if (currentTab === 'change') {
+    phpAmount = raw;
+  } else {
+    const srcCur = document.getElementById('currency-select').value;
+    if (srcCur === 'PHP') {
+      phpAmount = raw; // inserting PHP
+    } else {
+      phpAmount = txn.convertedAmount; // foreign converted to PHP
+    }
+  }
+
+  const hasId = txn.idType && txn.idType !== 'none';
+  // If above 50,000, require ID (compliance)
+  if (phpAmount > 50000 && !hasId) {
+    await kioskAlert(currentLang === 'fil'
+      ? 'Kailangan ng valid na ID para sa transaksyon na higit sa ₱50,000. Bumalik sa verification.'
+      : 'A valid ID is required for transactions above ₱50,000. Please go back and provide ID verification.');
+    return;
+  }
+
+  if (selectedPaymentMethod === 'gcash' || selectedPaymentMethod === 'maya') {
+    // E-wallet: go to digital payout screen for wallet number
+    updateTransaction({ payoutMethod: selectedPaymentMethod, walletType: selectedPaymentMethod });
+    document.getElementById('wallet-type-label').textContent = selectedPaymentMethod === 'gcash' ? 'GCash' : 'Maya';
+    document.getElementById('wallet-number-input').value = '';
+    document.getElementById('digital-proceed-btn').disabled = true;
+    // Reset to QR scan view
+    document.getElementById('qr-scan-section').classList.remove('hidden');
+    document.getElementById('manual-input-section').classList.add('hidden');
+    const main    = document.getElementById('main-view');
+    const digital = document.getElementById('digital-payout-view');
+    transitionView(main, digital);
+  } else if (currentTab === 'foreign') {
+    // Foreign cash: check payout feasibility before proceeding
+    const payoutAmt = txn.convertedAmount || 0;
+    if (!checkPayoutFeasibility(payoutAmt)) {
+      kioskAlert(currentLang === 'fil'
+        ? 'Paumanhin, hindi sapat ang laman ng makina para sa halagang ito. Subukan ang mas mababang halaga o pumili ng e-wallet.'
+        : 'Sorry, the machine does not have enough cash for this amount. Try a lower amount or choose an e-wallet payout.');
+      return;
+    }
+    // Foreign cash: go to payout selection
     const main = document.getElementById('main-view');
     const payout = document.getElementById('payout-view');
     setStep(3);
     transitionView(main, payout);
   } else {
+    // Change mode cash — also check feasibility
+    const payoutAmt = txn.netAmount || 0;
+    if (!checkPayoutFeasibility(payoutAmt)) {
+      kioskAlert(currentLang === 'fil'
+        ? 'Paumanhin, hindi sapat ang laman ng makina para sa halagang ito. Subukan ang mas mababang halaga.'
+        : 'Sorry, the machine does not have enough cash for this amount. Try a lower amount.');
+      return;
+    }
     updateTransaction({ payoutMethod: 'cash' });
     checkOtpOrConfirm();
   }
@@ -891,38 +1234,70 @@ function doExchange() {
   hideConfirm();
   const summary = buildSummary();
 
-  // Dispense from inventory if cash payout
-  if (txn.payoutMethod === 'cash') {
-    const amount = currentTab === 'change' ? txn.netAmount : txn.convertedAmount;
-    const { bills } = calcBillsWithInventory(amount);
-    dispenseFromInventory(bills);
-    txn.bills = bills;
-  }
+  // Show processing screen first
+  const visible = getVisibleView();
+  const processing = document.getElementById('processing-view');
+  setStep(-1);
+  transitionView(visible, processing);
 
-  completeTransaction();
+  // Animate processing steps
+  const steps = ['pstep-reserve', 'pstep-log', 'pstep-execute', 'pstep-confirm'];
+  let stepIdx = 0;
 
-  // Set success message
-  if (txn.payoutMethod !== 'cash') {
-    document.getElementById('success-msg').textContent = t('digitalTransfer');
-  } else if (currentTab === 'change') {
-    document.getElementById('success-msg').textContent = t('collectCoins');
-  } else {
-    const srcCur = txn.currency;
-    if (srcCur === 'PHP') {
-      document.getElementById('success-msg').textContent =
-        (currentLang === 'fil' ? 'Kunin ang iyong ' : 'Collect your ') + NAMES[txn.targetCurrency] + (currentLang === 'fil' ? ' sa ibaba.' : ' below.');
+  function advanceProcessingStep() {
+    if (stepIdx > 0) {
+      const prev = document.getElementById(steps[stepIdx - 1]);
+      prev.querySelector('.pstep-icon').textContent = '✅';
+      prev.classList.add('done');
+    }
+    if (stepIdx < steps.length) {
+      const cur = document.getElementById(steps[stepIdx]);
+      cur.querySelector('.pstep-icon').textContent = '⏳';
+      cur.classList.add('active');
+      document.getElementById('processing-status').textContent = cur.textContent.trim().replace('⏳', '').trim() + '...';
+      stepIdx++;
+      setTimeout(advanceProcessingStep, 600 + Math.random() * 400);
     } else {
-      document.getElementById('success-msg').textContent = t('collectCash');
+      // All done — perform actual transaction logic
+      if (txn.payoutMethod === 'cash') {
+        const amount = currentTab === 'change' ? txn.netAmount : txn.convertedAmount;
+        const { bills } = calcBillsWithInventory(amount);
+        dispenseFromInventory(bills);
+        txn.bills = bills;
+      }
+      completeTransaction();
+
+      // Set success message
+      if (txn.payoutMethod !== 'cash') {
+        document.getElementById('success-msg').textContent = t('digitalTransfer');
+      } else if (currentTab === 'change') {
+        document.getElementById('success-msg').textContent = t('collectCoins');
+      } else {
+        const srcCur = txn.currency;
+        if (srcCur === 'PHP') {
+          document.getElementById('success-msg').textContent =
+            (currentLang === 'fil' ? 'Kunin ang iyong ' : 'Collect your ') + NAMES[txn.targetCurrency] + (currentLang === 'fil' ? ' sa ibaba.' : ' below.');
+        } else {
+          document.getElementById('success-msg').textContent = t('collectCash');
+        }
+      }
+
+      document.getElementById('success-summary').innerHTML = summary;
+      const proc = document.getElementById('processing-view');
+      const success = document.getElementById('success-view');
+      setTimeout(() => {
+        transitionView(proc, success);
+        // Reset processing step icons for next time
+        steps.forEach(id => {
+          const el = document.getElementById(id);
+          el.querySelector('.pstep-icon').textContent = '⏳';
+          el.classList.remove('done', 'active');
+        });
+      }, 500);
     }
   }
 
-  document.getElementById('success-summary').innerHTML = summary;
-  const visible = getVisibleView();
-  const success = document.getElementById('success-view');
-  setTimeout(() => {
-    setStep(-1);
-    transitionView(visible, success);
-  }, 200);
+  setTimeout(advanceProcessingStep, 400);
 }
 
 /* ==================================================
@@ -934,7 +1309,9 @@ function clearAll() {
 }
 
 function anotherTransaction() {
+  resetReceiptOptions();
   txn = null;
+  selectedPaymentMethod = 'cash';
   const success = document.getElementById('success-view');
   const idle    = document.getElementById('idle-view');
   setStep(0);
@@ -943,6 +1320,8 @@ function anotherTransaction() {
 
 function resetKiosk() {
   clearAll();
+  resetReceiptOptions();
+  selectedPaymentMethod = 'cash';
   if (txn) { txn.status = 'CANCELLED'; logEvent('TXN_CANCELLED', { id: txn.id, stage: 'reset' }); }
   txn = null;
   clearInterval(otpTimer);
@@ -950,11 +1329,6 @@ function resetKiosk() {
   const splash  = document.getElementById('splash-view');
   setStep(-1);
   if (visible) transitionView(visible, splash);
-}
-
-function cancelGlobal() {
-  if (document.getElementById('splash-view') && !document.getElementById('splash-view').classList.contains('hidden')) return;
-  resetKiosk();
 }
 
 function backFromMain() {
@@ -970,6 +1344,156 @@ function backFromPayout() {
   const main   = document.getElementById('main-view');
   setStep(2);
   transitionView(payout, main);
+}
+
+/* ==================================================
+   QR / MANUAL WALLET INPUT TOGGLE
+   ================================================== */
+function showManualWalletInput() {
+  document.getElementById('qr-scan-section').classList.add('hidden');
+  document.getElementById('manual-input-section').classList.remove('hidden');
+  // Re-bind numpad for wallet input
+  const walletInput = document.getElementById('wallet-number-input');
+  walletInput.value = '';
+  document.getElementById('digital-proceed-btn').disabled = true;
+}
+
+function showQrScanSection() {
+  document.getElementById('manual-input-section').classList.add('hidden');
+  document.getElementById('qr-scan-section').classList.remove('hidden');
+}
+
+function simulateQrScan() {
+  // Mockup: simulate a successful QR scan with a random wallet number
+  var prefixes = ['0917','0918','0919','0920','0921','0927','0928','0929','0930','0935','0936','0945','0953','0956','0975','0977'];
+  var prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  var fakeNumber = prefix + String(Math.floor(1000000 + Math.random() * 9000000));
+  updateTransaction({ walletNumber: fakeNumber });
+  logEvent('QR_SCAN_OK', { walletType: txn.walletType, number: fakeNumber.substring(0,4) + '***' });
+  goToConfirm();
+}
+
+/* ==================================================
+   KIOSK ALERT / CONFIRM MODAL
+   ================================================== */
+var _kioskAlertResolve = null;
+
+function kioskAlert(message, title) {
+  document.getElementById('kiosk-alert-title').textContent = title || (currentLang === 'fil' ? 'Paunawa' : 'Notice');
+  document.getElementById('kiosk-alert-message').textContent = message;
+  document.getElementById('kiosk-alert-ok-btn').textContent = 'OK';
+  document.getElementById('kiosk-alert-cancel-btn').classList.add('hidden');
+  document.getElementById('kiosk-alert-overlay').classList.add('visible');
+  return new Promise(function(resolve) { _kioskAlertResolve = resolve; });
+}
+
+function kioskConfirm(message, title) {
+  document.getElementById('kiosk-alert-title').textContent = title || (currentLang === 'fil' ? 'Kumpirmahin' : 'Confirm');
+  document.getElementById('kiosk-alert-message').textContent = message;
+  document.getElementById('kiosk-alert-ok-btn').textContent = currentLang === 'fil' ? 'Oo, Magpatuloy' : 'Yes, Proceed';
+  document.getElementById('kiosk-alert-cancel-btn').classList.remove('hidden');
+  document.getElementById('kiosk-alert-cancel-btn').textContent = currentLang === 'fil' ? 'Kanselahin' : 'Cancel';
+  document.getElementById('kiosk-alert-overlay').classList.add('visible');
+  return new Promise(function(resolve) { _kioskAlertResolve = resolve; });
+}
+
+function closeKioskAlert(result) {
+  document.getElementById('kiosk-alert-overlay').classList.remove('visible');
+  if (_kioskAlertResolve) {
+    _kioskAlertResolve(result !== false);
+    _kioskAlertResolve = null;
+  }
+}
+
+/* ==================================================
+   RECEIPT OPTIONS
+   ================================================== */
+function replaceReceiptButtons(message) {
+  var receiptOpts = document.querySelector('.receipt-options');
+  if (receiptOpts) {
+    receiptOpts.innerHTML = '<div style="text-align:center;padding:16px 0;"><p style="font-size:15px;font-weight:600;color:#16a34a;">' + message + '</p></div>';
+  }
+}
+
+function resetReceiptOptions() {
+  var receiptOpts = document.querySelector('.receipt-options');
+  if (receiptOpts) {
+    receiptOpts.innerHTML =
+      '<p style="font-size:13px;color:#64748b;margin-bottom:8px;">' + t('receiptQuestion') + '</p>' +
+      '<div class="receipt-grid">' +
+        '<button class="receipt-btn" onclick="printReceipt()">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>' +
+          '<span>' + t('printReceipt') + '</span></button>' +
+        '<button class="receipt-btn" onclick="smsReceipt()">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
+          '<span>' + t('smsReceipt') + '</span></button>' +
+        '<button class="receipt-btn" onclick="skipReceipt()">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+          '<span>' + t('noReceipt') + '</span></button>' +
+      '</div>';
+  }
+}
+
+function printReceipt() {
+  logEvent('RECEIPT_PRINT', { txnId: txn ? txn.id : null });
+  replaceReceiptButtons(currentLang === 'fil' ? '🖨️ Nai-print na ang Resibo' : '🖨️ Receipt Printed');
+}
+
+function smsReceipt() {
+  var smsInput = document.getElementById('sms-receipt-input');
+  var sendBtn = document.getElementById('sms-send-btn');
+
+  // Auto-fill from wallet number if the user entered one manually
+  if (txn && txn.walletNumber) {
+    smsInput.value = txn.walletNumber;
+    sendBtn.disabled = false;
+  } else {
+    smsInput.value = '';
+    sendBtn.disabled = true;
+  }
+
+  document.getElementById('sms-receipt-overlay').classList.add('visible');
+
+  // Bind numpad to SMS input
+  smsInput.style.cursor = 'pointer';
+  smsInput.onclick = function() { openNumpadForInput(smsInput); };
+  smsInput.onfocus = function() { openNumpadForInput(smsInput); };
+
+  // Wire up validation on input
+  smsInput.removeEventListener('input', validateSmsInput);
+  smsInput.addEventListener('input', validateSmsInput);
+}
+
+function validateSmsInput() {
+  var val = document.getElementById('sms-receipt-input').value.replace(/\D/g, '');
+  document.getElementById('sms-send-btn').disabled = val.length < 10;
+}
+
+function confirmSmsReceipt() {
+  var phone = document.getElementById('sms-receipt-input').value.replace(/\D/g, '');
+  if (phone.length >= 10) {
+    logEvent('RECEIPT_SMS', { txnId: txn ? txn.id : null, phone: phone.substring(0, 4) + '***' });
+    document.getElementById('sms-receipt-overlay').classList.remove('visible');
+    var masked = phone.substring(0,4) + '***' + phone.substring(phone.length - 3);
+    replaceReceiptButtons(currentLang === 'fil' ? '✅ Resibo ipinadala sa ' + masked : '✅ Receipt Sent to ' + masked);
+  }
+}
+
+function closeSmsReceipt() {
+  document.getElementById('sms-receipt-overlay').classList.remove('visible');
+}
+
+function skipReceipt() {
+  logEvent('RECEIPT_SKIP', { txnId: txn ? txn.id : null });
+  replaceReceiptButtons(currentLang === 'fil' ? 'Walang Resibo' : 'No Receipt Selected');
+}
+
+/* ==================================================
+   PAYOUT FEASIBILITY GATE
+   ================================================== */
+function checkPayoutFeasibility(amount) {
+  const { shortfall } = calcBillsWithInventory(amount);
+  return shortfall === 0;
 }
 
 /* ==================================================
@@ -1009,31 +1533,101 @@ document.getElementById('id-number-input').addEventListener('input', validateCom
 document.getElementById('wallet-number-input').addEventListener('input', validateWallet);
 
 /* ==================================================
-   INIT: Number Pad Logic
+   INIT: Number Pad Logic (generic for all inputs)
    ================================================== */
 let numpadBuffer = '';
+let numpadTarget = null;   // the input element currently being edited
+let numpadMaxLen = 10;
+let numpadIsAmount = false;
+let numpadFormatPhone = false;
+
+
 const numpadOverlay = document.getElementById('numpad-overlay');
 const numpadValueEl = document.getElementById('numpad-value');
-const amountInput   = document.getElementById('amount-input');
+const numpadPrefixEl = document.getElementById('numpad-prefix');
+const numpadHeaderEl = document.getElementById('numpad-header');
+let amountInput = document.getElementById('amount-input');
 
-amountInput.setAttribute('readonly', true);
-amountInput.style.cursor = 'pointer';
-amountInput.addEventListener('click', openNumpad);
-amountInput.addEventListener('focus', openNumpad);
+function bindNumpadInputs() {
+  // Re-query amountInput in case DOM was replaced
+  amountInput = document.getElementById('amount-input');
+  if (amountInput) {
+    amountInput.setAttribute('readonly', true);
+    amountInput.style.cursor = 'pointer';
+    amountInput.removeEventListener('click', amountInput._numpadClick);
+    amountInput.removeEventListener('focus', amountInput._numpadFocus);
+    amountInput._numpadClick = function() { openNumpadFor(amountInput, { max: 10, label: 'Enter Amount', prefix: '₱', isAmount: true }); };
+    amountInput._numpadFocus = function() { openNumpadFor(amountInput, { max: 10, label: 'Enter Amount', prefix: '₱', isAmount: true }); };
+    amountInput.addEventListener('click', amountInput._numpadClick);
+    amountInput.addEventListener('focus', amountInput._numpadFocus);
+  }
+  document.querySelectorAll('.kiosk-numpad-input').forEach(function(input) {
+    input.style.cursor = 'pointer';
+    input.removeEventListener('click', input._numpadClick);
+    input.removeEventListener('focus', input._numpadFocus);
+    input._numpadClick = function() { openNumpadForInput(input); };
+    input._numpadFocus = function() { openNumpadForInput(input); };
+    input.addEventListener('click', input._numpadClick);
+    input.addEventListener('focus', input._numpadFocus);
+  });
+}
+
+
+// Initial binding after DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bindNumpadInputs);
+} else {
+  bindNumpadInputs();
+}
+
+// Fallback: Always rebind numpad inputs after any click (in case of missed dynamic DOM changes)
+document.body.addEventListener('click', function(e) {
+  setTimeout(bindNumpadInputs, 100); // slight delay to allow DOM updates
+});
+
+
+
+function openNumpadForInput(input) {
+  var max = parseInt(input.getAttribute('data-numpad-max'), 10) || 10;
+  var label = input.getAttribute('data-numpad-label') || 'Enter Value';
+  var prefix = input.getAttribute('data-numpad-prefix');
+  var formatPhone = input.getAttribute('data-numpad-format') === 'phone';
+  openNumpadFor(input, { max: max, label: label, prefix: prefix != null ? prefix : '', isAmount: false, formatPhone: formatPhone });
+}
 
 numpadOverlay.addEventListener('click', function(e) {
   if (e.target === numpadOverlay) numpadDone();
 });
 
-function openNumpad() {
-  const current = amountInput.value;
-  numpadBuffer = current && current !== '0' ? String(parseInt(current, 10)) : '';
+function openNumpadFor(input, opts) {
+  numpadTarget = input;
+  numpadMaxLen = opts.max || 10;
+  numpadIsAmount = opts.isAmount || false;
+  numpadFormatPhone = opts.formatPhone || false;
+
+  // Set header and prefix
+  numpadHeaderEl.textContent = opts.label || 'Enter Value';
+  numpadPrefixEl.textContent = opts.prefix || '';
+  numpadPrefixEl.style.display = opts.prefix ? '' : 'none';
+
+  // Read current value from input
+  var raw = input.value.replace(/[^0-9]/g, '');
+  numpadBuffer = raw && raw !== '0' ? raw : '';
+  if (numpadIsAmount) {
+    var num = parseInt(raw, 10);
+    numpadBuffer = num ? String(num) : '';
+  }
   renderNumpad();
   numpadOverlay.classList.add('visible');
 }
 
+// Keep old openNumpad for backward compat (amount input)
+function openNumpad() {
+  openNumpadFor(amountInput, { max: 10, label: 'Enter Amount', prefix: '₱', isAmount: true });
+}
+
 function numpadPress(digit) {
-  if (numpadBuffer.length >= 10) return;
+  if (numpadBuffer.length >= numpadMaxLen) return;
   numpadBuffer += digit;
   renderNumpad();
 }
@@ -1049,15 +1643,42 @@ function numpadClear() {
 }
 
 function numpadDone() {
-  const val = parseInt(numpadBuffer, 10) || 0;
-  amountInput.value = val || '';
-  onAmountChange();
+  if (!numpadTarget) { numpadOverlay.classList.remove('visible'); return; }
+
+  if (numpadIsAmount) {
+    var val = parseInt(numpadBuffer, 10) || 0;
+    numpadTarget.value = val || '';
+    onAmountChange();
+  } else if (numpadFormatPhone) {
+    // Format as 09XX XXX XXXX for display
+    numpadTarget.value = numpadBuffer;
+    // Trigger any validation listeners
+    numpadTarget.dispatchEvent(new Event('input', { bubbles: true }));
+  } else {
+    numpadTarget.value = numpadBuffer;
+    numpadTarget.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
   numpadOverlay.classList.remove('visible');
-  amountInput.blur();
+  numpadTarget.blur();
+  numpadTarget = null;
 }
 
 function renderNumpad() {
-  const display = numpadBuffer === '' ? '0' : parseInt(numpadBuffer, 10).toLocaleString('en-PH');
+  var display;
+  if (numpadBuffer === '') {
+    display = '0';
+  } else if (numpadIsAmount) {
+    display = parseInt(numpadBuffer, 10).toLocaleString('en-PH');
+  } else if (numpadFormatPhone && numpadBuffer.length > 0) {
+    // Format as 09XX XXX XXXX
+    var d = numpadBuffer;
+    if (d.length <= 4) display = d;
+    else if (d.length <= 7) display = d.slice(0,4) + ' ' + d.slice(4);
+    else display = d.slice(0,4) + ' ' + d.slice(4,7) + ' ' + d.slice(7);
+  } else {
+    display = numpadBuffer;
+  }
   numpadValueEl.textContent = display;
 }
 

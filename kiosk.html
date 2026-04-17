@@ -4,218 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>PesoXchange Kiosk</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #f0f4f8;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-  }
-
-  .kiosk { max-width: 480px; width: 100%; margin: 0 auto; }
-
-  .screen {
-    background: #fff;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-  }
-
-  .header { background: #1a56a0; padding: 1.25rem 1.5rem; text-align: center; }
-  .header h1 { color: #fff; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
-  .header p { color: rgba(255,255,255,0.75); font-size: 13px; margin-top: 4px; }
-
-  .rates-bar {
-    background: #0e3d7a;
-    padding: 0.5rem 1.5rem;
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .rate-chip { color: rgba(255,255,255,0.85); font-size: 12px; display: flex; align-items: center; gap: 4px; }
-  .rate-chip span { color: #7dd3fc; font-weight: 600; }
-
-  .body { padding: 1.5rem; }
-
-  .tabs {
-    display: flex;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-  }
-  .tab {
-    flex: 1;
-    padding: 0.65rem;
-    font-size: 14px;
-    background: #f8fafc;
-    color: #64748b;
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    transition: background 0.15s, color 0.15s;
-  }
-  .tab.active { background: #1a56a0; color: #fff; font-weight: 600; }
-  .tab:not(:last-child) { border-right: 1px solid #e2e8f0; }
-  .tab:hover:not(.active) { background: #f1f5f9; }
-
-  label { display: block; font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 500; }
-
-  .field { margin-bottom: 1rem; }
-
-  .input-group { position: relative; }
-  .currency-prefix {
-    position: absolute; left: 12px; top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px; font-weight: 600; color: #94a3b8;
-    pointer-events: none;
-  }
-  input[type=number] {
-    width: 100%;
-    padding: 0.65rem 1rem 0.65rem 2.5rem;
-    font-size: 20px;
-    font-weight: 600;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    background: #fff;
-    color: #1e293b;
-    font-family: inherit;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  input[type=number]:focus {
-    outline: none;
-    border-color: #1a56a0;
-    box-shadow: 0 0 0 3px rgba(26,86,160,0.12);
-  }
-  input[type=number]::-webkit-inner-spin-button,
-  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
-
-  .denom-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin-bottom: 1rem;
-  }
-  .denom-btn {
-    padding: 0.5rem 0.25rem;
-    font-size: 13px;
-    font-weight: 600;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    background: #f8fafc;
-    color: #1e293b;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.12s;
-  }
-  .denom-btn:hover { background: #eff6ff; border-color: #1a56a0; color: #1a56a0; }
-  .denom-btn:active { transform: scale(0.96); }
-
-  select {
-    width: 100%;
-    padding: 0.65rem 1rem;
-    font-size: 15px;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    background: #fff;
-    color: #1e293b;
-    font-family: inherit;
-    cursor: pointer;
-  }
-  select:focus { outline: none; border-color: #1a56a0; box-shadow: 0 0 0 3px rgba(26,86,160,0.12); }
-
-  .result-card {
-    background: #f8fafc;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    padding: 1rem 1.25rem;
-    margin-top: 1rem;
-  }
-  .result-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    font-size: 14px;
-  }
-  .result-row:not(:last-child) { border-bottom: 1px solid #e2e8f0; }
-  .result-label { color: #64748b; }
-  .result-val { font-weight: 600; color: #1e293b; }
-  .result-val.big { font-size: 22px; color: #1a56a0; }
-
-  .bill-display { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .bill-tag {
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-    border-radius: 6px;
-    padding: 3px 10px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  .btn-exchange {
-    width: 100%;
-    padding: 0.9rem;
-    font-size: 16px;
-    font-weight: 600;
-    background: #1a56a0;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: inherit;
-    margin-top: 1rem;
-    transition: background 0.15s, transform 0.1s;
-  }
-  .btn-exchange:hover { background: #154a8a; }
-  .btn-exchange:active { transform: scale(0.98); }
-
-  .btn-clear {
-    width: 100%;
-    padding: 0.6rem;
-    font-size: 13px;
-    background: transparent;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    color: #64748b;
-    cursor: pointer;
-    font-family: inherit;
-    margin-top: 8px;
-    transition: background 0.12s;
-  }
-  .btn-clear:hover { background: #f1f5f9; }
-
-  .success-screen { text-align: center; padding: 2rem 1rem; }
-  .checkmark {
-    width: 60px; height: 60px;
-    border-radius: 50%;
-    background: #dcfce7;
-    border: 2px solid #4ade80;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-  }
-  .checkmark svg { width: 30px; height: 30px; }
-  .success-screen h2 { font-size: 20px; font-weight: 600; margin-bottom: 0.5rem; color: #1e293b; }
-  .success-screen p { font-size: 14px; color: #64748b; margin-bottom: 1.5rem; }
-
-  .footer-note {
-    text-align: center;
-    font-size: 12px;
-    color: #94a3b8;
-    margin-top: 1rem;
-    padding-bottom: 0.5rem;
-  }
-
-  .hidden { display: none; }
-</style>
+<link rel="stylesheet" href="kiosk.css" />
 </head>
 <body>
 
@@ -226,39 +15,103 @@
       <p>Insert cash below to get started</p>
     </div>
     <div class="rates-bar">
-      <div class="rate-chip">1 USD = <span>57.50</span> PHP</div>
-      <div class="rate-chip">1 EUR = <span>62.10</span> PHP</div>
-      <div class="rate-chip">1 PHP = <span>1.00</span> PHP</div>
+      <div class="rates-track" id="rates-track"></div>
     </div>
 
     <div class="body">
 
+      <!-- IDLE / WELCOME SCREEN -->
+      <div id="idle-view" class="idle-screen view fade-in">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <h2>Welcome!</h2>
+        <p class="subtitle">Select a service to get started</p>
+        <div class="mode-grid">
+          <button class="mode-btn" onclick="startMode('change')">
+            <div class="mode-icon change-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="9" r="7"/>
+                <circle cx="15" cy="15" r="7"/>
+              </svg>
+            </div>
+            <div class="mode-text">
+              <h3>Coins &amp; Change</h3>
+              <p>Break bills into smaller denominations</p>
+            </div>
+          </button>
+          <button class="mode-btn" onclick="startMode('foreign')">
+            <div class="mode-icon foreign-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+            </div>
+            <div class="mode-text">
+              <h3>Foreign Currency Exchange</h3>
+              <p>Convert foreign bills to Philippine Pesos</p>
+            </div>
+          </button>
+        </div>
+        <p class="idle-hint">Touch a service above to begin</p>
+      </div>
+
       <!-- MAIN VIEW -->
-      <div id="main-view">
-        <div class="tabs">
-          <button class="tab active" onclick="switchTab('change')">Coins &amp; Change</button>
-          <button class="tab" onclick="switchTab('foreign')">Foreign Currency</button>
+      <div id="main-view" class="hidden view">
+        <button class="btn-back" onclick="resetKiosk()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          Back
+        </button>
+
+        <!-- FOREIGN CURRENCY SELECTOR (above input when foreign tab active) -->
+        <div id="foreign-selector" class="field hidden">
+          <label>Currency inserted</label>
+          <select id="currency-select" onchange="onCurrencyChange()">
+            <option value="USD">🇺🇸 US Dollar (USD)</option>
+            <option value="EUR">🇪🇺 Euro (EUR)</option>
+            <option value="KRW">🇰🇷 South Korean Won (KRW)</option>
+            <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
+            <option value="CAD">🇨🇦 Canadian Dollar (CAD)</option>
+            <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
+            <option value="AUD">🇦🇺 Australian Dollar (AUD)</option>
+            <option value="SGD">🇸🇬 Singapore Dollar (SGD)</option>
+            <option value="SAR">🇸🇦 Saudi Riyal (SAR)</option>
+            <option value="PHP">🇵🇭 Philippine Peso (PHP)</option>
+          </select>
+        </div>
+
+        <!-- TARGET CURRENCY (shown when PHP is selected as source) -->
+        <div id="target-selector" class="field hidden">
+          <label>Convert to</label>
+          <select id="target-select" onchange="onCurrencyChange()">
+            <option value="USD">🇺🇸 US Dollar (USD)</option>
+            <option value="EUR">🇪🇺 Euro (EUR)</option>
+            <option value="KRW">🇰🇷 South Korean Won (KRW)</option>
+            <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
+            <option value="CAD">🇨🇦 Canadian Dollar (CAD)</option>
+            <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
+            <option value="AUD">🇦🇺 Australian Dollar (AUD)</option>
+            <option value="SGD">🇸🇬 Singapore Dollar (SGD)</option>
+            <option value="SAR">🇸🇦 Saudi Riyal (SAR)</option>
+          </select>
         </div>
 
         <div class="field">
-          <label>Amount inserted (PHP &#8369;)</label>
+          <label id="amount-label">Amount inserted (PHP &#8369;)</label>
           <div class="input-group">
-            <span class="currency-prefix">&#8369;</span>
+            <span class="currency-prefix" id="currency-prefix">&#8369;</span>
             <input type="number" id="amount-input" min="0" step="1" placeholder="0" oninput="onAmountChange()" />
           </div>
         </div>
 
         <label>Quick select</label>
-        <div class="denom-grid">
-          <button class="denom-btn" onclick="addAmount(20)">&#8369;20</button>
-          <button class="denom-btn" onclick="addAmount(50)">&#8369;50</button>
-          <button class="denom-btn" onclick="addAmount(100)">&#8369;100</button>
-          <button class="denom-btn" onclick="addAmount(200)">&#8369;200</button>
-          <button class="denom-btn" onclick="addAmount(500)">&#8369;500</button>
-          <button class="denom-btn" onclick="addAmount(1000)">&#8369;1,000</button>
-          <button class="denom-btn" onclick="addAmount(5000)">&#8369;5,000</button>
-          <button class="denom-btn" onclick="addAmount(10000)">&#8369;10,000</button>
-        </div>
+        <div class="denom-grid" id="denom-grid"></div>
 
         <!-- CHANGE SECTION -->
         <div id="change-section">
@@ -286,40 +139,32 @@
 
         <!-- FOREIGN SECTION -->
         <div id="foreign-section" class="hidden">
-          <div class="field" style="margin-top:0;">
-            <label>Convert to</label>
-            <select id="currency-select" onchange="onAmountChange()">
-              <option value="USD">🇺🇸 US Dollar (USD)</option>
-              <option value="EUR">🇪🇺 Euro (EUR)</option>
-              <option value="PHP">🇵🇭 Philippine Peso (PHP)</option>
-            </select>
-          </div>
           <div class="result-card">
             <div class="result-row">
               <span class="result-label">Total inserted</span>
-              <span class="result-val" id="fr-inserted">&#8369;0.00</span>
+              <span class="result-val" id="fr-inserted">$0.00</span>
             </div>
             <div class="result-row">
               <span class="result-label">Service fee (2%)</span>
-              <span class="result-val" id="fr-fee">&#8369;0.00</span>
+              <span class="result-val" id="fr-fee">$0.00</span>
             </div>
             <div class="result-row">
               <span class="result-label">Exchange rate</span>
               <span class="result-val" id="fr-rate">—</span>
             </div>
             <div class="result-row">
-              <span class="result-label">You receive</span>
-              <span class="result-val big" id="fr-receive">0.00</span>
+              <span class="result-label" id="fr-receive-label">You receive (PHP)</span>
+              <span class="result-val big" id="fr-receive">&#8369;0.00</span>
             </div>
           </div>
         </div>
 
-        <button class="btn-exchange" onclick="doExchange()">Confirm &amp; Dispense</button>
-        <button class="btn-clear" onclick="clearAll()">Clear / Cancel</button>
+        <button class="btn-exchange" onclick="showConfirm()">Proceed</button>
+        <button class="btn-clear" onclick="clearAll()">Cancel</button>
       </div>
 
       <!-- SUCCESS VIEW -->
-      <div id="success-view" class="success-screen hidden">
+      <div id="success-view" class="success-screen hidden view">
         <div class="checkmark">
           <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"
                stroke-linecap="round" stroke-linejoin="round">
@@ -329,7 +174,8 @@
         <h2>Transaction complete!</h2>
         <p id="success-msg">Please collect your cash below.</p>
         <div class="result-card" id="success-summary" style="text-align:left;margin-bottom:1rem;"></div>
-        <button class="btn-exchange" onclick="resetKiosk()">New Transaction</button>
+        <button class="btn-exchange" onclick="anotherTransaction()">Make Another Transaction</button>
+        <button class="btn-clear" onclick="resetKiosk()">Back to Home</button>
       </div>
 
     </div>
@@ -337,127 +183,42 @@
   <div class="footer-note">Rates updated daily &nbsp;|&nbsp; Service hours: 8AM–10PM &nbsp;|&nbsp; Machine ID: PKX-0042</div>
 </div>
 
-<script>
-  const RATES   = { USD: 57.50, EUR: 62.10, PHP: 1.00 };
-  const SYMBOLS = { USD: '$', EUR: '€', PHP: '₱' };
-  const NAMES   = { USD: 'US Dollars', EUR: 'Euros', PHP: 'Philippine Pesos' };
-  const CHANGE_FEE  = 0.01;
-  const FOREIGN_FEE = 0.02;
-  const PHP_DENOMS  = [1000, 500, 200, 100, 50, 20, 10, 5, 1];
+<!-- CONFIRMATION MODAL -->
+<div class="modal-overlay" id="confirm-overlay">
+  <div class="modal">
+    <h3 class="modal-title">Confirm Transaction</h3>
+    <p class="modal-subtitle">Please review the details below</p>
+    <div class="result-card" id="confirm-summary" style="text-align:left;margin-bottom:1rem;"></div>
+    <button class="btn-exchange" onclick="doExchange()">Confirm &amp; Dispense</button>
+    <button class="btn-clear" onclick="hideConfirm()">Cancel</button>
+  </div>
+</div>
 
-  let currentTab = 'change';
+<!-- NUMBER PAD OVERLAY -->
+<div class="numpad-overlay" id="numpad-overlay">
+  <div class="numpad">
+    <div class="numpad-display">
+      <span class="prefix">&#8369;</span>
+      <span id="numpad-value">0</span>
+    </div>
+    <div class="numpad-grid">
+      <button class="numpad-btn" onclick="numpadPress('1')">1</button>
+      <button class="numpad-btn" onclick="numpadPress('2')">2</button>
+      <button class="numpad-btn" onclick="numpadPress('3')">3</button>
+      <button class="numpad-btn" onclick="numpadPress('4')">4</button>
+      <button class="numpad-btn" onclick="numpadPress('5')">5</button>
+      <button class="numpad-btn" onclick="numpadPress('6')">6</button>
+      <button class="numpad-btn" onclick="numpadPress('7')">7</button>
+      <button class="numpad-btn" onclick="numpadPress('8')">8</button>
+      <button class="numpad-btn" onclick="numpadPress('9')">9</button>
+      <button class="numpad-btn action" onclick="numpadClear()">Clear</button>
+      <button class="numpad-btn" onclick="numpadPress('0')">0</button>
+      <button class="numpad-btn action" onclick="numpadBackspace()">&larr;</button>
+    </div>
+    <button class="numpad-btn done" style="width:100%;margin-top:8px;" onclick="numpadDone()">Done</button>
+  </div>
+</div>
 
-  function switchTab(tab) {
-    currentTab = tab;
-    document.querySelectorAll('.tab').forEach((t, i) => {
-      t.classList.toggle('active', (i === 0 && tab === 'change') || (i === 1 && tab === 'foreign'));
-    });
-    document.getElementById('change-section').classList.toggle('hidden', tab !== 'change');
-    document.getElementById('foreign-section').classList.toggle('hidden', tab !== 'foreign');
-    onAmountChange();
-  }
-
-  function addAmount(n) {
-    const inp = document.getElementById('amount-input');
-    inp.value = (parseFloat(inp.value) || 0) + n;
-    onAmountChange();
-  }
-
-  function fmt(n, sym) {
-    return (sym || '₱') + n.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  function calcBills(amount) {
-    let rem = Math.floor(amount);
-    const result = [];
-    for (const d of PHP_DENOMS) {
-      const count = Math.floor(rem / d);
-      if (count > 0) { result.push({ denom: d, count }); rem -= count * d; }
-    }
-    return result;
-  }
-
-  function onAmountChange() {
-    const raw = parseFloat(document.getElementById('amount-input').value) || 0;
-
-    if (currentTab === 'change') {
-      const fee     = raw * CHANGE_FEE;
-      const receive = raw - fee;
-      document.getElementById('cr-inserted').textContent = fmt(raw);
-      document.getElementById('cr-fee').textContent      = fmt(fee);
-      document.getElementById('cr-receive').textContent  = fmt(receive);
-      const bills = calcBills(receive);
-      const bd    = document.getElementById('bill-display');
-      bd.innerHTML = bills.length
-        ? bills.map(b => `<span class="bill-tag">${b.count > 1 ? b.count + '×' : ''}₱${b.denom}</span>`).join('')
-        : '<span style="font-size:13px;color:#94a3b8;">—</span>';
-    } else {
-      const cur       = document.getElementById('currency-select').value;
-      const fee       = raw * FOREIGN_FEE;
-      const net       = raw - fee;
-      const rate      = RATES[cur];
-      const converted = cur === 'PHP' ? net : (net / rate);
-      const sym       = SYMBOLS[cur];
-      document.getElementById('fr-inserted').textContent = fmt(raw);
-      document.getElementById('fr-fee').textContent      = fmt(fee);
-      document.getElementById('fr-rate').textContent     = cur === 'PHP'
-        ? '₱1 = ₱1.000'
-        : '₱1 = ' + sym + (1 / rate).toFixed(5);
-      document.getElementById('fr-receive').textContent  = fmt(converted, sym);
-    }
-  }
-
-  function doExchange() {
-    const raw = parseFloat(document.getElementById('amount-input').value) || 0;
-    if (raw <= 0) { alert('Please insert an amount first.'); return; }
-
-    let summary = '';
-
-    if (currentTab === 'change') {
-      const fee     = raw * CHANGE_FEE;
-      const receive = raw - fee;
-      const bills   = calcBills(receive);
-      summary = `
-        <div class="result-row"><span class="result-label">Inserted</span><span class="result-val">${fmt(raw)}</span></div>
-        <div class="result-row"><span class="result-label">Fee (1%)</span><span class="result-val">${fmt(fee)}</span></div>
-        <div class="result-row"><span class="result-label">Dispensed</span><span class="result-val big">${fmt(receive)}</span></div>
-        <div style="padding-top:8px;font-size:13px;color:#64748b;">Coins &amp; bills breakdown:</div>
-        <div class="bill-display" style="margin-top:6px;">
-          ${bills.map(b => `<span class="bill-tag">${b.count > 1 ? b.count + '×' : ''}₱${b.denom}</span>`).join('') || '—'}
-        </div>`;
-      document.getElementById('success-msg').textContent = 'Collect your coins and bills below.';
-    } else {
-      const cur       = document.getElementById('currency-select').value;
-      const fee       = raw * FOREIGN_FEE;
-      const net       = raw - fee;
-      const rate      = RATES[cur];
-      const converted = cur === 'PHP' ? net : (net / rate);
-      const sym       = SYMBOLS[cur];
-      summary = `
-        <div class="result-row"><span class="result-label">Inserted</span><span class="result-val">${fmt(raw)}</span></div>
-        <div class="result-row"><span class="result-label">Fee (2%)</span><span class="result-val">${fmt(fee)}</span></div>
-        <div class="result-row"><span class="result-label">Dispensed</span><span class="result-val big">${fmt(converted, sym)}</span></div>
-        <div class="result-row"><span class="result-label">Currency</span><span class="result-val">${NAMES[cur]}</span></div>`;
-      document.getElementById('success-msg').textContent = `Collect your ${NAMES[cur]} below.`;
-    }
-
-    document.getElementById('success-summary').innerHTML = summary;
-    document.getElementById('main-view').classList.add('hidden');
-    document.getElementById('success-view').classList.remove('hidden');
-  }
-
-  function clearAll() {
-    document.getElementById('amount-input').value = '';
-    onAmountChange();
-  }
-
-  function resetKiosk() {
-    clearAll();
-    document.getElementById('main-view').classList.remove('hidden');
-    document.getElementById('success-view').classList.add('hidden');
-  }
-
-  onAmountChange();
-</script>
+<script src="kiosk.js"></script>
 </body>
 </html>

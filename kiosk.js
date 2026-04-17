@@ -1,12 +1,70 @@
+// Allow only numeric input in the amount field
+document.addEventListener('DOMContentLoaded', function() {
+  var amountInput = document.getElementById('amount-input');
+  if (amountInput) {
+    amountInput.addEventListener('input', function(e) {
+      // Allow only numbers and one decimal point
+      let val = amountInput.value;
+      val = val.replace(/[^\d.]/g, '');
+      // Only one decimal point
+      val = val.replace(/(\..*)\./g, '$1');
+      amountInput.value = val;
+    });
+    amountInput.addEventListener('keydown', function(e) {
+      // Allow: backspace, delete, tab, escape, enter, arrows, home, end, period, and numbers
+      if ([46,8,9,27,13,110,190,35,36,37,38,39,40].indexOf(e.keyCode) !== -1 ||
+          // Allow Ctrl/cmd+A
+          (e.keyCode === 65 && (e.ctrlKey || e.metaKey)) ||
+          // Allow Ctrl/cmd+C
+          (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) ||
+          // Allow Ctrl/cmd+V
+          (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) ||
+          // Allow Ctrl/cmd+X
+          (e.keyCode === 88 && (e.ctrlKey || e.metaKey))) {
+        return;
+      }
+      // Block non-numeric
+      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+        e.preventDefault();
+      }
+    });
+  }
+});
 // --- PLACEHOLDER TRANSACTION FUNCTIONS (restored to prevent runtime errors) ---
 function createTransaction(mode) {
   // Placeholder: In a real system, this would initialize a transaction object
-  window.txn = { id: Date.now(), mode, status: 'INIT' };
+  // Set up a transaction object with all required properties for downstream logic
+  const currencySelect = document.getElementById('currency-select');
+  const targetSelect = document.getElementById('target-select');
+  const amountInput = document.getElementById('amount-input');
+  const payoutMethod = window.selectedPaymentMethod || 'cash';
+  const currency = currencySelect ? currencySelect.value : 'PHP';
+  const targetCurrency = targetSelect ? targetSelect.value : 'PHP';
+  const netAmount = parseFloat(amountInput ? amountInput.value : '0') || 0;
+  const convertedAmount = netAmount; // For simplicity, use netAmount; real logic would convert
+  window.txn = {
+    id: Date.now(),
+    mode,
+    status: 'INIT',
+    payoutMethod,
+    netAmount,
+    convertedAmount,
+    currency,
+    targetCurrency
+  };
 }
 
 function updateTransaction(update) {
   // Placeholder: In a real system, this would update the transaction object
-  if (window.txn) Object.assign(window.txn, update);
+  if (window.txn) {
+    Object.assign(window.txn, update);
+    // Ensure required properties are always present
+    if (!window.txn.payoutMethod) window.txn.payoutMethod = window.selectedPaymentMethod || 'cash';
+    if (typeof window.txn.netAmount === 'undefined') window.txn.netAmount = 0;
+    if (typeof window.txn.convertedAmount === 'undefined') window.txn.convertedAmount = window.txn.netAmount;
+    if (!window.txn.currency) window.txn.currency = 'PHP';
+    if (!window.txn.targetCurrency) window.txn.targetCurrency = 'PHP';
+  }
 }
 /* ============================================
    ECXCHANGE KIOSK — FULL SYSTEM
@@ -96,6 +154,8 @@ const systemStatus = {
 // Language dictionary (moved out of logEvent)
 const LANG = {
   en: {
+    title: 'hange Kiosk',
+    subtitle: 'Insert cash below to get started',
     otpSentTo: 'Code sent to',
     welcomeTitle: 'Our Services',
     selectService: 'Choose a service to get started',
@@ -134,7 +194,18 @@ const LANG = {
     enterManually: 'Enter number manually',
     backToQr: 'Back to QR scan',
     paymentMethod: 'Payment method',
-    insertCash: 'Insert Cash'
+    insertCash: 'Insert Cash',
+    // Compliance keys
+    complianceTitle: 'Identity Verification',
+    complianceSubtitle: 'Required by BSP (Bangko Sentral ng Pilipinas) regulations',
+    complianceNotice: 'Transactions exceeding ₱50,000 require a valid government-issued ID.',
+    txnType: 'Transaction type',
+    idType: 'Identification type',
+    noId: 'No ID (below ₱50,000)',
+    idLast4: 'ID number (last 4 digits)',
+    termsAgree: 'I agree to the <strong>Terms of Service</strong> and acknowledge the <strong>Anti-Money Laundering</strong> disclosure.',
+    dataAgree: 'I consent to the collection and processing of my data per the <strong>Data Privacy Act of 2012</strong>.',
+    proceedToTxn: 'Proceed to Transaction'
   },
   fil: {
     title: 'ECXChange Kiosk',
@@ -1140,7 +1211,9 @@ function doExchange() {
         dispenseFromInventory(bills);
         txn.bills = bills;
       }
-      completeTransaction();
+      if (typeof completeTransaction === 'function') {
+        completeTransaction();
+      }
 
       // Set success message
       if (txn.payoutMethod !== 'cash') {

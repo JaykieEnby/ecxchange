@@ -1,3 +1,143 @@
+/* Kiosk Numpad Overlay Styles */
+.kiosk-numpad-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(30, 41, 59, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  transition: opacity 0.2s;
+}
+.kiosk-numpad-overlay.hidden {
+  display: none;
+}
+.kiosk-numpad-modal {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 28px 24px 18px 24px;
+  min-width: 270px;
+  max-width: 95vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+#kiosk-numpad-input {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid #1a56a0;
+  border-radius: 10px;
+  padding: 10px 0;
+  width: 220px;
+  margin-bottom: 10px;
+  color: #1a56a0;
+  background: #f0f4f8;
+  outline: none;
+}
+.kiosk-numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 70px);
+  gap: 12px;
+}
+.kiosk-numpad-grid button {
+  padding: 18px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  background: #e0e7ef;
+  color: #1a56a0;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.kiosk-numpad-grid button:active {
+  background: #bcdffb;
+  transform: scale(0.97);
+}
+#kiosk-numpad-clear {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+#kiosk-numpad-clear:active {
+  background: #fecaca;
+}
+#kiosk-numpad-ok {
+  background: #1a56a0;
+  color: #fff;
+  font-size: 1.1rem;
+}
+#kiosk-numpad-ok:active {
+  background: #17437c;
+}
+/* Numpad Overlay Styles */
+.numpad-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.2s;
+}
+.numpad-overlay.hidden {
+  display: none;
+}
+.numpad-container {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 24px 18px 18px 18px;
+  min-width: 260px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.numpad-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.numpad-key {
+  flex: 1 1 0;
+  padding: 18px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #222;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.numpad-key:active {
+  background: #dbeafe;
+  transform: scale(0.97);
+}
+.numpad-back {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.numpad-back:active {
+  background: #fecaca;
+}
+.numpad-close {
+  background: #fbbf24;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 12px 0;
+  margin-top: 4px;
+}
+.numpad-close:active {
+  background: #f59e42;
+}
 .language-screen {
   text-align: center;
   padding: 2.5rem 1.5rem 2rem;

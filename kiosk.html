@@ -675,5 +675,54 @@
 
 
 <script src="kiosk.js"></script>
+</div>
+<!-- Numpad Overlay -->
+<div id="numpad-overlay" class="numpad-overlay hidden">
+  <div class="numpad-container">
+    <div class="numpad-row">
+      <button class="numpad-key">1</button>
+      <button class="numpad-key">2</button>
+      <button class="numpad-key">3</button>
+    </div>
+    <div class="numpad-row">
+      <button class="numpad-key">4</button>
+      <button class="numpad-key">5</button>
+      <button class="numpad-key">6</button>
+    </div>
+    <div class="numpad-row">
+      <button class="numpad-key">7</button>
+      <button class="numpad-key">8</button>
+      <button class="numpad-key">9</button>
+    </div>
+    <div class="numpad-row">
+      <button class="numpad-key">.</button>
+      <button class="numpad-key">0</button>
+      <button class="numpad-key numpad-back">⌫</button>
+    </div>
+    <div class="numpad-row">
+      <button class="numpad-key numpad-close">Close</button>
+    </div>
+  </div>
+</div>
+<!-- Kiosk Numpad Overlay -->
+<div id="kiosk-numpad-overlay" class="kiosk-numpad-overlay hidden">
+  <div class="kiosk-numpad-modal">
+    <input id="kiosk-numpad-input" class="kiosk-numpad-input" type="text" readonly />
+    <div class="kiosk-numpad-grid">
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+      <button>0</button>
+      <button id="kiosk-numpad-clear">C</button>
+      <button id="kiosk-numpad-ok">OK</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

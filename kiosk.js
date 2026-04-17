@@ -1,3 +1,98 @@
+// Kiosk Numpad Overlay Logic
+document.addEventListener('DOMContentLoaded', function() {
+  const overlay = document.getElementById('kiosk-numpad-overlay');
+  const modal = overlay.querySelector('.kiosk-numpad-modal');
+  const numpadInput = document.getElementById('kiosk-numpad-input');
+  let activeInput = null;
+
+  // Show numpad for all text/tel fields
+  document.body.addEventListener('focusin', function(e) {
+    if (e.target.tagName === 'INPUT' && (e.target.type === 'text' || e.target.type === 'tel')) {
+      activeInput = e.target;
+      numpadInput.value = activeInput.value;
+      overlay.classList.remove('hidden');
+      setTimeout(() => numpadInput.focus(), 50);
+    }
+  });
+
+  // Hide overlay if background is clicked
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.classList.add('hidden');
+      activeInput = null;
+    }
+  });
+
+  // Numpad button logic
+  modal.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const value = btn.textContent;
+      if (!activeInput) return;
+      if (value === 'C') {
+        numpadInput.value = '';
+      } else if (value === 'OK') {
+        activeInput.value = numpadInput.value;
+        overlay.classList.add('hidden');
+        activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        activeInput = null;
+      } else {
+        // Respect maxlength if set
+        let max = activeInput.maxLength > 0 ? activeInput.maxLength : 1000;
+        if (numpadInput.value.length < max) {
+          numpadInput.value += value;
+        }
+      }
+    });
+  });
+});
+// NUMPAD OVERLAY LOGIC
+document.addEventListener('DOMContentLoaded', function() {
+  let numpadOverlay = document.getElementById('numpad-overlay');
+  let activeInput = null;
+  // Show numpad on focus for all text/tel inputs
+  document.body.addEventListener('focusin', function(e) {
+    if (e.target.tagName === 'INPUT' && (e.target.type === 'text' || e.target.type === 'tel')) {
+      activeInput = e.target;
+      numpadOverlay.classList.remove('hidden');
+    }
+  });
+  // Hide numpad on close button
+  numpadOverlay.addEventListener('click', function(e) {
+    if (e.target.classList.contains('numpad-close')) {
+      numpadOverlay.classList.add('hidden');
+      activeInput = null;
+    }
+  });
+  // Numpad key input
+  numpadOverlay.addEventListener('click', function(e) {
+    if (!activeInput) return;
+    if (e.target.classList.contains('numpad-key')) {
+      let key = e.target.textContent;
+      if (e.target.classList.contains('numpad-back')) {
+        // Backspace
+        activeInput.value = activeInput.value.slice(0, -1);
+        activeInput.dispatchEvent(new Event('input'));
+      } else if (!e.target.classList.contains('numpad-close')) {
+        // Insert number or dot
+        // Only allow one dot for decimals
+        if (key === '.' && activeInput.value.includes('.')) return;
+        // Respect maxlength if set
+        let max = activeInput.maxLength > 0 ? activeInput.maxLength : 1000;
+        if (activeInput.value.length < max) {
+          activeInput.value += key;
+          activeInput.dispatchEvent(new Event('input'));
+        }
+      }
+    }
+  });
+  // Hide numpad if overlay background is clicked (optional UX)
+  numpadOverlay.addEventListener('click', function(e) {
+    if (e.target === numpadOverlay) {
+      numpadOverlay.classList.add('hidden');
+      activeInput = null;
+    }
+  });
+});
 // Allow only numeric input in the amount field
 document.addEventListener('DOMContentLoaded', function() {
   var amountInput = document.getElementById('amount-input');

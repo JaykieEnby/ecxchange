@@ -22,11 +22,6 @@
   color: #fff;
   font-size: 1.35rem;
 }
-.header-logo {
-  height: 22px;
-  vertical-align: baseline;
-  margin-right: 2px;
-}
 .header-title-text {
   color: #fff;
   font-size: 1.35rem;
@@ -37,19 +32,17 @@
 </style>
 </head>
 
-
 <body>
 
 <div class="kiosk">
   <div class="screen">
     <div class="header">
-        <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
-          <!-- Language button removed for new flow -->
+        <div class="header-top" style="display:flex;align-items:center;justify-content:space-between;position:relative;">
+          <div style="width:60px;"></div>
           <h1 id="header-title" class="header-section-title header-title-main">
-            <img src="assets/Product-Logo-White.png" alt="ECXChange" style="height:22px;vertical-align:baseline;margin-right:2px;">
-            <span style="color:#fff;font-size:1.35rem;font-weight:600;letter-spacing:0.5px;line-height:1;">hange Kiosk</span>
+            <span id="header-title-text" style="color:#fff;font-size:1.35rem;font-weight:600;letter-spacing:0.5px;line-height:1;">ECXChange Kiosk</span>
           </h1>
-          <button class="header-btn" id="help-btn" onclick="showHelp()" style="position:absolute;right:0;top:50%;transform:translateY(-50%);">
+          <button class="header-btn" id="help-btn" onclick="showHelp()">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             Help
           </button>
@@ -66,21 +59,27 @@
     <div class="body">
       <!-- LANGUAGE SELECTION SCREEN -->
       <div id="language-view" class="language-screen view hidden">
-        <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-bottom:10px;">
-           <h2 class="header-section-title">Select Language</h2>
-        </div>
+          <button class="btn-back" onclick="backToSplash()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            Back
+          </button>
+          <div style="text-align:center;">
+            <h2 class="header-section-title">Select Language</h2>
+          </div>
         <div class="language-options">
-          <button class="lang-btn" data-lang="en" onclick="selectLanguage('en')">🇺🇸 English</button>
-          <button class="lang-btn" data-lang="fil" onclick="selectLanguage('fil')">🇵🇭 Tagalog</button>
-          <button class="lang-btn" data-lang="jp" onclick="selectLanguage('en')">🇯🇵 Japanese</button>
-          <button class="lang-btn" data-lang="kr" onclick="selectLanguage('en')">🇰🇷 Korean</button>
-          <button class="lang-btn" data-lang="cn" onclick="selectLanguage('en')">🇨🇳 Chinese</button>
-          <button class="lang-btn" data-lang="eu" onclick="selectLanguage('en')">🇪🇺 European (EUR)</button>
-          <button class="lang-btn" data-lang="ca" onclick="selectLanguage('en')">🇨🇦 Canadian</button>
-          <button class="lang-btn" data-lang="au" onclick="selectLanguage('en')">🇦🇺 Australian</button>
-          <button class="lang-btn" data-lang="sg" onclick="selectLanguage('en')">🇸🇬 Singaporean</button>
-          <button class="lang-btn" data-lang="sa" onclick="selectLanguage('en')">🇸🇦 Saudi</button>
-          <button class="lang-btn" data-lang="hk" onclick="selectLanguage('en')">🇭🇰 Hong Kong</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇺🇸 English</button>
+          <button class="lang-btn" onclick="selectLanguage('fil')">🇵🇭 Tagalog</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇯🇵 Japanese</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇰🇷 Korean</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇨🇳 Chinese</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇪🇺 European (EUR)</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇨🇦 Canadian</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇦🇺 Australian</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇸🇬 Singaporean</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇸🇦 Saudi</button>
+          <button class="lang-btn" onclick="selectLanguage('en')">🇭🇰 Hong Kong</button>
         </div>
       </div>
 
@@ -92,82 +91,80 @@
           </svg>
         </div>
         <img src="assets/Product-Logo-Black.png" alt="ECXChange" style="height:44px;margin-top:6px;">
-        <p class="splash-tagline" style="margin-top:16px;">Fast &amp; Secure Currency Exchange</p>
+        <p id="splash-tagline" class="splash-tagline">Fast &amp; Secure Currency Exchange</p>
         <div class="splash-features">
           <div class="splash-feature">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>BSP Licensed</span>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1a56a0" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span id="feature-bsp">BSP Licensed</span>
           </div>
           <div class="splash-feature">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>24/7 Service</span>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1a56a0" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="feature-247">24/7 Service</span>
           </div>
           <div class="splash-feature">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Competitive Rates</span>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1a56a0" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="feature-rates">Competitive Rates</span>
           </div>
         </div>
-        <button class="btn-start-touch" onclick="showServiceSelection()">
+        <button id="start-touch-btn" class="btn-start-touch" onclick="showServiceSelection()">
           <span class="touch-icon">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           </span>
-          Tap to Get Started
+          <span id="start-touch-text">Tap to Get Started</span>
         </button>
-        <p class="splash-hint">Touch anywhere to begin</p>
+        <p id="splash-hint" class="splash-hint">Touch anywhere to begin</p>
       </div>
 
       <!-- IDLE / SERVICE SELECTION SCREEN -->
       <div id="idle-view" class="idle-screen view hidden">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24">
-            <text x="12" y="18" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" font-family="Arial, sans-serif">₱</text>
+        <button class="btn-back" onclick="backToLanguageSelection()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
           </svg>
-        </div>
-        <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-bottom:10px;">
-           <h2 class="header-section-title">Our Services</h2>
-        </div>
-        <p class="subtitle">Choose a service to get started</p>
+          Back
+        </button>
+        <h2 class="service-title">Our Services</h2>
+        <p class="service-subtitle">Choose a service to get started</p>
         <div class="mode-grid">
           <button class="mode-btn" onclick="startMode('change')">
             <div class="mode-icon change-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1a56a0" stroke-width="2">
                 <circle cx="9" cy="9" r="7"/>
                 <circle cx="15" cy="15" r="7"/>
               </svg>
             </div>
             <div class="mode-text">
-              <h3 style="text-align:center;">Coins &amp; Change</h3>
+              <h3>Coins &amp; Change</h3>
               <p>Break bills into smaller denominations</p>
             </div>
           </button>
           <button class="mode-btn" onclick="startMode('foreign')">
             <div class="mode-icon foreign-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2">
                 <circle cx="12" cy="12" r="10"/>
                 <line x1="2" y1="12" x2="22" y2="12"/>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
               </svg>
             </div>
             <div class="mode-text">
-              <h3 style="text-align:center;">Foreign Currency Exchange</h3>
+              <h3>Foreign Currency Exchange</h3>
               <p>Convert foreign bills to Philippine Pesos</p>
             </div>
           </button>
           <button class="mode-btn" onclick="showRatesView()">
             <div class="mode-icon rates-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
                 <line x1="12" y1="1" x2="12" y2="23"/>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
               </svg>
             </div>
             <div class="mode-text">
-              <h3 style="text-align:center;">Exchange Rates</h3>
+              <h3>Exchange Rates</h3>
               <p>View today's foreign currency rates</p>
             </div>
           </button>
         </div>
         <p class="idle-hint">Touch a service above to begin</p>
-
       </div>
 
       <!-- EXCHANGE RATES VIEW -->
@@ -179,58 +176,52 @@
           Back
         </button>
         <div class="rates-view-header">
-          <div class="compliance-icon" style="background:#dcfce7;">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="compliance-icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#16a34a" stroke-width="2">
               <line x1="12" y1="1" x2="12" y2="23"/>
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
             </svg>
           </div>
-          <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-bottom:10px;">
-            <h3 class="header-section-title">Today's Exchange Rates</h3>
-          </div>
+          <h3 class="header-section-title">Today's Exchange Rates</h3>
           <p>Foreign currency to Philippine Peso (PHP)</p>
         </div>
-        <div class="rates-table" id="rates-table"></div>
-        <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:1rem;">Rates are updated daily and may vary at the time of transaction.</p>
+        <div class="rates-table-container">
+          <div id="rates-table"></div>
+        </div>
+        <p class="rates-footer">Rates are updated daily and may vary at the time of transaction.</p>
       </div>
 
       <!-- COMPLIANCE VERIFICATION SCREEN -->
       <div id="compliance-view" class="compliance-screen view hidden">
         <button class="btn-back" onclick="backToServices()">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="15 18 9 12 15 6"/>
           </svg>
           Back
         </button>
-
         <div class="compliance-header">
           <div class="compliance-icon">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#1a56a0" stroke-width="2">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
           </div>
-          <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-bottom:10px;">
-            <h3 class="header-section-title">Compliance Verification</h3>
-          </div>
+          <h3 class="header-section-title">Compliance Verification</h3>
           <p>Required by BSP (Bangko Sentral ng Pilipinas) regulations</p>
         </div>
-
         <div class="compliance-notice">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#b45309" stroke-width="2">
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
-          <span>Transactions exceeding &#8369;50,000 require a valid government-issued ID.</span>
+          <span>Transactions exceeding ₱50,000 require a valid government-issued ID.</span>
         </div>
-
         <div class="field">
           <label>Transaction type</label>
           <div class="compliance-type-badge" id="compliance-type-badge">Foreign Currency Exchange</div>
         </div>
-
         <div class="field">
           <label>Identification type</label>
           <select id="id-type-select">
-            <option value="none">No ID (below &#8369;50,000)</option>
+            <option value="none">No ID (below ₱50,000)</option>
             <option value="passport">Passport</option>
             <option value="drivers">Driver's License</option>
             <option value="national">National ID (PhilSys)</option>
@@ -240,12 +231,10 @@
             <option value="ofw">OFW ID</option>
           </select>
         </div>
-
         <div id="id-number-field" class="field hidden">
           <label>ID number (last 4 digits)</label>
           <input type="text" id="id-number-input" maxlength="4" placeholder="••••" class="compliance-input" />
         </div>
-
         <div class="compliance-terms">
           <label class="checkbox-label">
             <input type="checkbox" id="terms-checkbox" />
@@ -253,7 +242,6 @@
             <span>I agree to the <strong>Terms of Service</strong> and acknowledge the <strong>Anti-Money Laundering</strong> disclosure.</span>
           </label>
         </div>
-
         <div class="compliance-terms">
           <label class="checkbox-label">
             <input type="checkbox" id="data-checkbox" />
@@ -261,7 +249,6 @@
             <span>I consent to the collection and processing of my data per the <strong>Data Privacy Act of 2012</strong>.</span>
           </label>
         </div>
-
         <button class="btn-exchange" id="compliance-proceed-btn" onclick="proceedFromCompliance()" disabled>Proceed to Transaction</button>
         <button class="btn-clear" onclick="backToServices()">Cancel</button>
       </div>
@@ -269,459 +256,217 @@
       <!-- MAIN VIEW -->
       <div id="main-view" class="hidden view">
         <button class="btn-back" onclick="backFromMain()">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="15 18 9 12 15 6"/>
           </svg>
           Back
         </button>
-
-        <!-- PAYMENT METHOD SELECTOR -->
-        <div class="field">
-          <label>Payment method</label>
-          <div class="payment-method-grid" id="payment-method-grid">
-            <button class="payment-method-btn active" data-method="cash" onclick="selectPaymentMethod('cash')">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/>
-              </svg>
-              <span>Insert Cash</span>
-            </button>
-            <button class="payment-method-btn" data-method="gcash" onclick="selectPaymentMethod('gcash')">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
-              </svg>
-              <span>GCash</span>
-            </button>
-            <button class="payment-method-btn" data-method="maya" onclick="selectPaymentMethod('maya')">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
-              </svg>
-              <span>Maya</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- FOREIGN CURRENCY SELECTOR (above input when foreign tab active) -->
-        <div id="foreign-selector" class="field hidden">
-          <label>Currency inserted</label>
-          <select id="currency-select" onchange="onCurrencyChange()">
-            <option value="USD">🇺🇸 US Dollar (USD)</option>
-            <option value="EUR">🇪🇺 Euro (EUR)</option>
-            <option value="KRW">🇰🇷 South Korean Won (KRW)</option>
-            <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
-            <option value="CAD">🇨🇦 Canadian Dollar (CAD)</option>
-            <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
-            <option value="AUD">🇦🇺 Australian Dollar (AUD)</option>
-            <option value="SGD">🇸🇬 Singapore Dollar (SGD)</option>
-            <option value="SAR">🇸🇦 Saudi Riyal (SAR)</option>
-            <option value="HKD">🇭🇰 Hong Kong Dollar (HKD)</option>
-            <option value="PHP">🇵🇭 Philippine Peso (PHP)</option>
-          </select>
-        </div>
-
-        <!-- TARGET CURRENCY (shown when PHP is selected as source) -->
-        <div id="target-selector" class="field hidden">
-          <label>Convert to</label>
-          <select id="target-select" onchange="onCurrencyChange()">
-            <option value="USD">🇺🇸 US Dollar (USD)</option>
-            <option value="EUR">🇪🇺 Euro (EUR)</option>
-            <option value="KRW">🇰🇷 South Korean Won (KRW)</option>
-            <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
-            <option value="CAD">🇨🇦 Canadian Dollar (CAD)</option>
-            <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
-            <option value="AUD">🇦🇺 Australian Dollar (AUD)</option>
-            <option value="SGD">🇸🇬 Singapore Dollar (SGD)</option>
-            <option value="SAR">🇸🇦 Saudi Riyal (SAR)</option>
-            <option value="HKD">🇭🇰 Hong Kong Dollar (HKD)</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label id="amount-label">Amount inserted (PHP &#8369;)</label>
-          <div class="input-group">
-            <span class="currency-prefix" id="currency-prefix">&#8369;</span>
-            <input type="text" id="amount-input" placeholder="0" inputmode="decimal" autocomplete="off" />
-          </div>
-        </div>
-
-        <label>Quick select</label>
-        <div class="denom-grid" id="denom-grid"></div>
-
-        <!-- CHANGE SECTION -->
-        <div id="change-section">
-          <div class="result-card">
-            <div class="result-row">
-              <span class="result-label">Total inserted</span>
-              <span class="result-val" id="cr-inserted">&#8369;0.00</span>
-            </div>
-            <div class="result-row">
-              <span class="result-label">Service fee (1%)</span>
-              <span class="result-val" id="cr-fee">&#8369;0.00</span>
-            </div>
-            <div class="result-row">
-              <span class="result-label">You receive</span>
-              <span class="result-val big" id="cr-receive">&#8369;0.00</span>
-            </div>
-            <div style="padding-top:10px;">
-              <div style="font-size:13px;color:#64748b;margin-bottom:6px;">Bills &amp; coins breakdown</div>
-              <div class="bill-display" id="bill-display">
-                <span style="font-size:13px;color:#94a3b8;">—</span>
+        <div class="main-two-column">
+          <div class="left-column">
+            <div class="field">
+              <label>Payment method</label>
+              <div class="payment-method-grid">
+                <button class="payment-method-btn active" data-method="cash" onclick="selectPaymentMethod('cash')">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Insert Cash</span>
+                </button>
+                <button class="payment-method-btn" data-method="gcash" onclick="selectPaymentMethod('gcash')">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  <span>GCash</span>
+                </button>
+                <button class="payment-method-btn" data-method="maya" onclick="selectPaymentMethod('maya')">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  <span>Maya</span>
+                </button>
               </div>
             </div>
+            <div id="foreign-selector" class="field hidden">
+              <label>Currency inserted</label>
+              <select id="currency-select" onchange="onCurrencyChange()">
+                <option value="USD">🇺🇸 US Dollar (USD)</option>
+                <option value="EUR">🇪🇺 Euro (EUR)</option>
+                <option value="KRW">🇰🇷 South Korean Won (KRW)</option>
+                <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
+                <option value="CAD">🇨🇦 Canadian Dollar (CAD)</option>
+                <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
+                <option value="AUD">🇦🇺 Australian Dollar (AUD)</option>
+                <option value="SGD">🇸🇬 Singapore Dollar (SGD)</option>
+                <option value="SAR">🇸🇦 Saudi Riyal (SAR)</option>
+                <option value="HKD">🇭🇰 Hong Kong Dollar (HKD)</option>
+                <option value="PHP">🇵🇭 Philippine Peso (PHP)</option>
+              </select>
+            </div>
+            <div id="target-selector" class="field hidden">
+              <label>Convert to</label>
+              <select id="target-select" onchange="onCurrencyChange()">
+                <option value="USD">🇺🇸 US Dollar (USD)</option>
+                <option value="EUR">🇪🇺 Euro (EUR)</option>
+                <option value="KRW">🇰🇷 South Korean Won (KRW)</option>
+                <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
+                <option value="CAD">🇨🇦 Canadian Dollar (CAD)</option>
+                <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
+                <option value="AUD">🇦🇺 Australian Dollar (AUD)</option>
+                <option value="SGD">🇸🇬 Singapore Dollar (SGD)</option>
+                <option value="SAR">🇸🇦 Saudi Riyal (SAR)</option>
+                <option value="HKD">🇭🇰 Hong Kong Dollar (HKD)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label id="amount-label">Amount inserted</label>
+              <div class="input-group">
+                <span class="currency-prefix" id="currency-prefix">₱</span>
+                <input type="text" id="amount-input" placeholder="0" inputmode="decimal" autocomplete="off" />
+              </div>
+            </div>
+            <label>Quick select</label>
+            <div class="denom-grid" id="denom-grid"></div>
+          </div>
+          <div class="right-column">
+            <div id="change-section">
+              <div class="result-card">
+                <div class="result-row"><span class="result-label">Total inserted</span><span class="result-val" id="cr-inserted">₱0.00</span></div>
+                <div class="result-row"><span class="result-label">Service fee (1%)</span><span class="result-val" id="cr-fee">₱0.00</span></div>
+                <div class="result-row"><span class="result-label">You receive</span><span class="result-val big" id="cr-receive">₱0.00</span></div>
+                <div><div style="font-size:11px;color:#64748b;">Bills &amp; coins breakdown</div>
+                <div class="bill-display" id="bill-display"><span>—</span></div></div>
+              </div>
+            </div>
+            <div id="foreign-section" class="hidden">
+              <div class="result-card">
+                <div class="result-row"><span class="result-label">Total inserted</span><span class="result-val" id="fr-inserted">$0.00</span></div>
+                <div class="result-row"><span class="result-label">Service fee (2%)</span><span class="result-val" id="fr-fee">$0.00</span></div>
+                <div class="result-row"><span class="result-label">Exchange rate</span><span class="result-val" id="fr-rate">—</span></div>
+                <div class="result-row"><span class="result-label" id="fr-receive-label">You receive (PHP)</span><span class="result-val big" id="fr-receive">₱0.00</span></div>
+              </div>
+            </div>
+            <button class="btn-exchange" onclick="showConfirm()">Proceed</button>
+            <button class="btn-clear" onclick="resetKiosk()">Cancel</button>
           </div>
         </div>
-
-        <!-- FOREIGN SECTION -->
-        <div id="foreign-section" class="hidden">
-          <div class="result-card">
-            <div class="result-row">
-              <span class="result-label">Total inserted</span>
-              <span class="result-val" id="fr-inserted">$0.00</span>
-            </div>
-            <div class="result-row">
-              <span class="result-label">Service fee (2%)</span>
-              <span class="result-val" id="fr-fee">$0.00</span>
-            </div>
-            <div class="result-row">
-              <span class="result-label">Exchange rate</span>
-              <span class="result-val" id="fr-rate">—</span>
-            </div>
-            <div class="result-row">
-              <span class="result-label" id="fr-receive-label">You receive (PHP)</span>
-              <span class="result-val big" id="fr-receive">&#8369;0.00</span>
-            </div>
-          </div>
-        </div>
-
-        <button class="btn-exchange" onclick="showConfirm()">Proceed</button>
-        <button class="btn-clear" onclick="resetKiosk()">Cancel</button>
       </div>
 
-      <!-- PAYOUT METHOD VIEW (Foreign only) -->
+      <!-- PAYOUT METHOD VIEW -->
       <div id="payout-view" class="payout-screen view hidden">
         <button class="btn-back" onclick="backFromPayout()">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
           Back
         </button>
         <div class="payout-header">
-          <div class="payout-icon">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
-            </svg>
-          </div>
-          <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-bottom:10px;">
-            <h3 class="header-section-title">Choose Payout Method</h3>
-          </div>
+          <div class="payout-icon"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#1a56a0" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+          <h3 class="header-section-title">Choose Payout Method</h3>
           <p>How would you like to receive your funds?</p>
         </div>
         <div class="payout-grid">
           <button class="mode-btn" onclick="selectPayout('cash')">
-            <div class="mode-icon change-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><line x1="2" y1="10" x2="4" y2="10"/><line x1="20" y1="10" x2="22" y2="10"/>
-              </svg>
-            </div>
-            <div class="mode-text">
-              <h3 style="text-align:center;">Cash Payout</h3>
-              <p>Collect physical bills &amp; coins</p>
-            </div>
+            <div class="mode-icon change-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#1a56a0" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="mode-text"><h3>Cash Payout</h3><p>Collect physical bills &amp; coins</p></div>
           </button>
           <button class="mode-btn" onclick="selectPayout('gcash')">
-            <div class="mode-icon" style="background:#0057ff20;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#0057ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="3" width="20" height="18" rx="3"/><path d="M7 12h10"/><path d="M12 7v10"/>
-              </svg>
-            </div>
-            <div class="mode-text">
-              <h3 style="text-align:center;">GCash</h3>
-              <p>Send to your GCash wallet</p>
-            </div>
+            <div class="mode-icon" style="background:#0057ff20;"><svg viewBox="0 0 24 24" fill="none" stroke="#0057ff" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="3"/><path d="M7 12h10"/><path d="M12 7v10"/></svg></div>
+            <div class="mode-text"><h3>GCash</h3><p>Send to your GCash wallet</p></div>
           </button>
           <button class="mode-btn" onclick="selectPayout('maya')">
-            <div class="mode-icon" style="background:#00b14f20;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#00b14f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="3" width="20" height="18" rx="3"/><circle cx="12" cy="12" r="4"/>
-              </svg>
-            </div>
-            <div class="mode-text">
-              <h3 style="text-align:center;">Maya</h3>
-              <p>Send to your Maya wallet</p>
-            </div>
+            <div class="mode-icon" style="background:#00b14f20;"><svg viewBox="0 0 24 24" fill="none" stroke="#00b14f" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="3"/><circle cx="12" cy="12" r="4"/></svg></div>
+            <div class="mode-text"><h3>Maya</h3><p>Send to your Maya wallet</p></div>
           </button>
         </div>
         <button class="btn-clear" onclick="resetKiosk()">Cancel</button>
       </div>
 
-      <!-- DIGITAL PAYOUT VIEW (Wallet input) -->
+      <!-- DIGITAL PAYOUT VIEW -->
       <div id="digital-payout-view" class="digital-payout-screen view hidden">
         <button class="btn-back" onclick="backFromDigitalPayout()">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
           Back
         </button>
-        <div class="compliance-header">
-          <div class="compliance-icon">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
-            </svg>
-          </div>
-          <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-bottom:10px;">
-            <h3 class="header-section-title">Digital Payout</h3>
-          </div>
+        <div class="digital-payout-header">
+          <div class="compliance-icon"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#1a56a0" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+          <h3 class="header-section-title">Digital Payout</h3>
           <p id="wallet-type-label">GCash</p>
         </div>
-
-        <!-- QR SCAN SECTION (shown first) -->
         <div id="qr-scan-section">
           <div class="qr-scan-area">
             <div class="qr-frame">
-              <img src="assets/payment-qrcode.png" alt="Payment QR Code" style="width:160px;height:160px;cursor:pointer;" onclick="simulateQrScan()" />
-              <p style="font-size:14px;color:#1a56a0;font-weight:600;margin-top:8px;">Scan QR Code</p>
-              <p style="font-size:12px;color:#94a3b8;">Scan this QR code with your e-wallet app</p>
+              <img src="assets/payment-qrcode.png" alt="Payment QR Code" onclick="simulateQrScan()" />
+              <p>Scan QR Code</p>
+              <p>Scan this QR code with your e-wallet app</p>
             </div>
           </div>
-          <div style="text-align:center;margin:12px 0;">
-            <span style="font-size:13px;color:#94a3b8;">— or —</span>
-          </div>
-          <button class="btn-clear" onclick="showManualWalletInput()" style="width:100%;">Enter number manually</button>
+          <div class="or-divider"><span>— or —</span></div>
+          <button class="btn-clear" onclick="showManualWalletInput()">Enter number manually</button>
         </div>
-
-        <!-- MANUAL INPUT SECTION (hidden initially) -->
         <div id="manual-input-section" class="hidden">
           <div class="field">
             <label>Mobile / Wallet number</label>
-            <input type="tel" id="wallet-number-input" maxlength="13" placeholder="09XX XXX XXXX" class="compliance-input" style="letter-spacing:3px;" />
-            <p style="font-size:12px;color:#94a3b8;margin-top:4px;">Enter your 11-digit mobile number</p>
+            <input type="tel" id="wallet-number-input" maxlength="13" placeholder="09XX XXX XXXX" class="compliance-input" />
+            <p>Enter your 11-digit mobile number</p>
           </div>
           <button class="btn-exchange" id="digital-proceed-btn" onclick="proceedFromDigitalPayout()" disabled>Send from E-Wallet</button>
-          <button class="btn-text" onclick="showQrScanSection()" style="margin-top:8px;">Back to QR scan</button>
+          <button class="btn-text" onclick="showQrScanSection()">Back to QR scan</button>
         </div>
-
-        <button class="btn-clear" onclick="resetKiosk()" style="margin-top:8px;">Cancel</button>
+        <button class="btn-clear" onclick="resetKiosk()">Cancel</button>
       </div>
 
       <!-- OTP VERIFICATION VIEW -->
       <div id="otp-view" class="otp-screen view hidden">
         <button class="btn-back" onclick="backFromOtp()">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
           Back
         </button>
-        <div class="compliance-header">
-          <div class="compliance-icon" style="background:#dcfce7;">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <polyline points="9 12 11 14 15 10"/>
-            </svg>
-          </div>
-          <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-bottom:10px;">
-            <h3 class="header-section-title">OTP Verification</h3>
-          </div>
+        <div class="otp-header">
+          <div class="compliance-icon"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#16a34a" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+          <h3 class="header-section-title">OTP Verification</h3>
           <p>Enter the 6-digit code sent to your registered number</p>
         </div>
         <p class="otp-sent-info" id="otp-sent-msg">Code sent to 09XX***XXXX</p>
-        <div class="field">
-          <input type="text" id="otp-input" maxlength="6" placeholder="000000" class="compliance-input" style="font-size:28px;letter-spacing:12px;" />
-        </div>
+        <div class="field"><input type="text" id="otp-input" maxlength="6" placeholder="000000" class="otp-input-field" /></div>
         <div id="otp-error" class="otp-error hidden">Invalid code. Please try again.</div>
-        <div class="otp-timer-row">
-          <span id="otp-timer">01:00</span>
-          <button class="btn-text" id="otp-resend-btn" onclick="resendOtp()" disabled>Resend Code</button>
-        </div>
+        <div class="otp-timer-row"><span id="otp-timer">01:00</span><button class="btn-text" id="otp-resend-btn" onclick="resendOtp()" disabled>Resend Code</button></div>
         <button class="btn-exchange" onclick="verifyOtp()">Verify &amp; Continue</button>
         <button class="btn-clear" onclick="resetKiosk()">Cancel</button>
       </div>
 
       <!-- SUCCESS VIEW -->
       <div id="success-view" class="success-screen hidden view">
-        <div class="checkmark">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"
-               stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        </div>
-        <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-bottom:10px;">
-           <h2 class="header-section-title">Transaction complete!</h2>
-        </div>
+        <div class="checkmark"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h2 class="header-section-title">Transaction complete!</h2>
         <p id="success-msg">Please collect your cash below.</p>
-        <div class="result-card" id="success-summary" style="text-align:left;margin-bottom:1rem;"></div>
-
-        <!-- RECEIPT OPTIONS -->
+        <div class="result-card" id="success-summary"></div>
         <div class="receipt-options">
-          <p style="font-size:13px;color:#64748b;margin-bottom:8px;">Would you like a receipt?</p>
+          <p>Would you like a receipt?</p>
           <div class="receipt-grid">
-            <button class="receipt-btn" onclick="printReceipt()">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-              <span>Print Receipt</span>
-            </button>
-            <button class="receipt-btn" onclick="smsReceipt()">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span>SMS Receipt</span>
-            </button>
-            <button class="receipt-btn" onclick="skipReceipt()">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              <span>No Receipt</span>
-            </button>
+            <button class="receipt-btn" onclick="printReceipt()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span>Print Receipt</span></button>
+            <button class="receipt-btn" onclick="smsReceipt()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>SMS Receipt</span></button>
+            <button class="receipt-btn" onclick="skipReceipt()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>No Receipt</span></button>
           </div>
         </div>
-
         <button class="btn-exchange" onclick="anotherTransaction()">Make Another Transaction</button>
         <button class="btn-clear" onclick="resetKiosk()">Back to Home</button>
       </div>
 
       <!-- PROCESSING VIEW -->
-      <div id="processing-view" class="processing-screen hidden view">
-        <div class="processing-spinner">
-          <svg viewBox="0 0 50 50" width="60" height="60">
-            <circle cx="25" cy="25" r="20" fill="none" stroke="#e2e8f0" stroke-width="4"/>
-            <circle cx="25" cy="25" r="20" fill="none" stroke="#1a56a0" stroke-width="4" stroke-linecap="round" stroke-dasharray="80 126" class="spinner-arc"/>
-          </svg>
-        </div>
-        <div class="header-top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin-bottom:10px;">
-           <h2 id="processing-title" class="header-section-title">Processing transaction...</h2>
-        </div>
+      <div id="processing-view" class="processing-screen view hidden">
+        <div class="spinner"></div>
+        <h2 class="header-section-title">Processing transaction...</h2>
         <p id="processing-status" class="processing-status">Reserving payout...</p>
         <div class="processing-steps">
-          <div class="processing-step" id="pstep-reserve">
-            <span class="pstep-icon">⏳</span> Reserving payout
-          </div>
-          <div class="processing-step" id="pstep-log">
-            <span class="pstep-icon">⏳</span> Logging transaction
-          </div>
-          <div class="processing-step" id="pstep-execute">
-            <span class="pstep-icon">⏳</span> Executing payout
-          </div>
-          <div class="processing-step" id="pstep-confirm">
-            <span class="pstep-icon">⏳</span> Confirming result
-          </div>
+          <div class="processing-step" id="pstep-reserve"><span class="pstep-icon">⏳</span> Reserving payout</div>
+          <div class="processing-step" id="pstep-log"><span class="pstep-icon">⏳</span> Logging transaction</div>
+          <div class="processing-step" id="pstep-execute"><span class="pstep-icon">⏳</span> Executing payout</div>
+          <div class="processing-step" id="pstep-confirm"><span class="pstep-icon">⏳</span> Confirming result</div>
         </div>
       </div>
-
     </div>
   </div>
-
-
-
-  <div class="footer-note">Rates updated daily &nbsp;|&nbsp; Service hours: 8AM–10PM &nbsp;|&nbsp; Machine ID: PKX-0042</div>
+  <div class="footer-note">Rates updated daily | Service hours: 8AM–10PM | Machine ID: PKX-0042</div>
 </div>
 
-<!-- CONFIRMATION MODAL -->
-<div class="modal-overlay" id="confirm-overlay">
-  <div class="modal">
-    <h3 class="modal-title" style="text-align:center;">Confirm Transaction</h3>
-    <p class="modal-subtitle">Please review the details below</p>
-    <div class="result-card" id="confirm-summary" style="text-align:left;margin-bottom:1rem;"></div>
-    <button class="btn-exchange" onclick="doExchange()">Confirm &amp; Dispense</button>
-    <button class="btn-clear" onclick="hideConfirm()">Cancel</button>
-  </div>
-</div>
-
-<!-- HELP MODAL -->
-<div class="modal-overlay" id="help-overlay">
-  <div class="modal">
-    <h3 class="modal-title" style="text-align:center;">Need Help?</h3>
-    <p style="font-size:14px;color:#475569;margin-bottom:1rem;line-height:1.5;">
-      If you experience any issues with this machine, please contact our support team or visit the nearest service desk.
-    </p>
-    <div class="help-contact">
-      <div class="help-row">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span>Hotline: 1-800-PESO (7376)</span>
-      </div>
-      <div class="help-row">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span>Email: support@ecxchange.ph</span>
-      </div>
-    </div>
-    <button class="btn-exchange" onclick="hideHelp()">Close</button>
-  </div>
-</div>
-
-<!-- KIOSK ALERT MODAL -->
-<div class="modal-overlay" id="kiosk-alert-overlay">
-  <div class="modal">
-    <div style="text-align:center;margin-bottom:12px;">
-      <svg id="kiosk-alert-icon" viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-    </div>
-    <h3 class="modal-title" id="kiosk-alert-title" style="text-align:center;">Notice</h3>
-    <p class="modal-subtitle" id="kiosk-alert-message" style="line-height:1.5;"></p>
-    <button class="btn-exchange" id="kiosk-alert-ok-btn" onclick="closeKioskAlert()">OK</button>
-    <button class="btn-clear hidden" id="kiosk-alert-cancel-btn" onclick="closeKioskAlert(false)">Cancel</button>
-  </div>
-</div>
-
-<!-- SMS RECEIPT MODAL -->
-<div class="modal-overlay" id="sms-receipt-overlay">
-  <div class="modal">
-    <h3 class="modal-title" id="sms-modal-title" style="text-align:center;">Send Receipt via SMS</h3>
-    <p class="modal-subtitle" id="sms-modal-subtitle">Enter the mobile number to send the receipt to</p>
-    <div class="field">
-      <input type="tel" id="sms-receipt-input" maxlength="13" placeholder="09XX XXX XXXX" class="compliance-input" style="letter-spacing:3px;font-size:18px;text-align:center;" />
-    </div>
-    <button class="btn-exchange" id="sms-send-btn" onclick="confirmSmsReceipt()" disabled>Send Receipt</button>
-    <button class="btn-clear" onclick="closeSmsReceipt()">Cancel</button>
-  </div>
-</div>
-
-<!-- NUMBER PAD OVERLAY -->
-
+<!-- MODALS -->
+<div class="modal-overlay" id="confirm-overlay"><div class="modal"><h3 class="modal-title">Confirm Transaction</h3><p class="modal-subtitle">Please review the details below</p><div class="result-card" id="confirm-summary"></div><button class="btn-exchange" onclick="doExchange()">Confirm &amp; Dispense</button><button class="btn-clear" onclick="hideConfirm()">Cancel</button></div></div>
+<div class="modal-overlay" id="help-overlay"><div class="modal"><h3 class="modal-title">Need Help?</h3><p>If you experience any issues with this machine, please contact our support team.</p><div class="help-contact"><div class="help-row"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1a56a0" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>Hotline: 1-800-PESO (7376)</span></div><div class="help-row"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1a56a0" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span>Email: support@ecxchange.ph</span></div></div><button class="btn-exchange" onclick="hideHelp()">Close</button></div></div>
+<div class="modal-overlay" id="kiosk-alert-overlay"><div class="modal"><div><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#b45309" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><h3 class="modal-title" id="kiosk-alert-title">Notice</h3><p class="modal-subtitle" id="kiosk-alert-message"></p><button class="btn-exchange" id="kiosk-alert-ok-btn" onclick="closeKioskAlert()">OK</button><button class="btn-clear hidden" id="kiosk-alert-cancel-btn" onclick="closeKioskAlert(false)">Cancel</button></div></div>
+<div class="modal-overlay" id="sms-receipt-overlay"><div class="modal"><h3 class="modal-title">Send Receipt via SMS</h3><p class="modal-subtitle">Enter the mobile number to send the receipt to</p><div class="field"><input type="tel" id="sms-receipt-input" maxlength="13" placeholder="09XX XXX XXXX" class="compliance-input" /></div><button class="btn-exchange" id="sms-send-btn" onclick="confirmSmsReceipt()" disabled>Send Receipt</button><button class="btn-clear" onclick="closeSmsReceipt()">Cancel</button></div></div>
 
 <script src="kiosk.js"></script>
-</div>
-<!-- Numpad Overlay -->
-<div id="numpad-overlay" class="numpad-overlay hidden">
-  <div class="numpad-container">
-    <div class="numpad-row">
-      <button class="numpad-key">1</button>
-      <button class="numpad-key">2</button>
-      <button class="numpad-key">3</button>
-    </div>
-    <div class="numpad-row">
-      <button class="numpad-key">4</button>
-      <button class="numpad-key">5</button>
-      <button class="numpad-key">6</button>
-    </div>
-    <div class="numpad-row">
-      <button class="numpad-key">7</button>
-      <button class="numpad-key">8</button>
-      <button class="numpad-key">9</button>
-    </div>
-    <div class="numpad-row">
-      <button class="numpad-key">.</button>
-      <button class="numpad-key">0</button>
-      <button class="numpad-key numpad-back">⌫</button>
-    </div>
-    <div class="numpad-row">
-      <button class="numpad-key numpad-close">Close</button>
-    </div>
-  </div>
-</div>
-<!-- Kiosk Numpad Overlay -->
-<div id="kiosk-numpad-overlay" class="kiosk-numpad-overlay hidden">
-  <div class="kiosk-numpad-modal">
-    <div class="kiosk-numpad-grid">
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>4</button>
-      <button>5</button>
-      <button>6</button>
-      <button>7</button>
-      <button>8</button>
-      <button>9</button>
-      <button>0</button>
-      <button id="kiosk-numpad-clear">C</button>
-      <button id="kiosk-numpad-ok">OK</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>

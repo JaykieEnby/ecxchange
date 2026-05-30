@@ -321,6 +321,21 @@ body {
   color: #64748b;
 }
 
+.rates-footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 12px;
+}
+
+.digital-payout-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.digital-payout-header .compliance-icon {
+  margin: 0 auto 12px;
+}
 .rates-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -558,6 +573,25 @@ body {
   cursor: pointer;
   margin-top: 10px;
 }
+
+.btn-text {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1a56a0;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s ease;
+}
+
+.btn-text:hover {
+  background: rgba(26, 86, 160, 0.08);
+}
+
 
 /* Form fields */
 label { 
@@ -1110,3 +1144,6 @@ select { padding-left: 14px; }
   flex-shrink: 0;
   background: #fff;
 }
+
+
+

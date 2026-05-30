@@ -1217,6 +1217,10 @@ function showQrScanSection() {
   const qrScanSection = document.getElementById('qr-scan-section');
   if (manualInputSection) manualInputSection.classList.add('hidden');
   if (qrScanSection) qrScanSection.classList.remove('hidden');
+  const walletInput = document.getElementById('wallet-number-input');
+  const digitalProceedBtn = document.getElementById('digital-proceed-btn');
+  if (walletInput) walletInput.value = '';
+  if (digitalProceedBtn) digitalProceedBtn.disabled = true;
 }
 
 function simulateQrScan() {
